@@ -1,14 +1,17 @@
 package publishing
 
 import (
-	"github.com/egoholic/charcoal/entities/publication"
+	"context"
+	"time"
+
+	"github.com/egoholic/charcoal/entity/content"
+	"github.com/egoholic/charcoal/entity/publication"
 )
 
-type PublishingUseCase struct{}
+type ContentPublishingUsecase struct{}
+type PublicationInserter func(context.Context, *publication.Publication) error
 
-func (uc *PublishingUseCase) Play(persister publication.PublicationCreator) {
-	p := publication.New()
-	persister.Persist(p)
-
-	return
+func (uc *ContentPublishingUsecase) Play(ctx context.Context, urlID string, c *content.Content, publishedAt time.Time, insert PublicationInserter) {
+	p := publication.New(urlID, c, publishedAt)
+	insert(ctx, p)
 }

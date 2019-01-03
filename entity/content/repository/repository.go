@@ -4,7 +4,6 @@ import (
 	"github.com/egoholic/charcoal/entity/content"
 )
 
-type
 type IdentityMap map[string]*content.Content
 
 func (im *IdentityMap) Insert(c *content.Content) {

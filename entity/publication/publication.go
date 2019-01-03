@@ -12,12 +12,12 @@ type Publication struct {
 	publishedAt time.Time
 }
 
-type Persister func(*Publication) bool
-type Creator func(*content.Content) (*Publication, error)
-type ByNameFinder func(string) (*Publication, error)
+func New(urlID string, content *content.Content, publishedAt time.Time) *Publication {
+	return &Publication{urlID, content, publishedAt}
+}
 
-func New(urlID string, content *content.Content, publishedAt time.Time) Publication {
-	return Publication{urlID, content, publishedAt}
+func (p *Publication) PK() string {
+	return p.URLID()
 }
 
 func (p *Publication) URLID() string {
