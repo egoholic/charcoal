@@ -8,6 +8,7 @@ import (
 type Content struct {
 	snapshot *chlog.Snapshot
 }
+type PK string
 
 func New(title, body string) *Content {
 	s := chlog.NewSnapshot()
@@ -17,8 +18,8 @@ func New(title, body string) *Content {
 	return &Content{s}
 }
 
-func (c *Content) PK() string {
-	return c.Title()
+func (c *Content) PK() PK {
+	return PK(c.Title())
 }
 
 func (c *Content) Title() string {

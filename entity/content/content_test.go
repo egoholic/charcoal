@@ -23,7 +23,7 @@ var _ = Describe("Content Entity", func() {
 		Describe(".PK()", func() {
 			It("returns primary key", func() {
 				content := New(title1, body1)
-				Expect(content.PK()).To(Equal(title1))
+				Expect(content.PK()).To(Equal(PK(title1)))
 			})
 		})
 		Describe(".Title()", func() {
