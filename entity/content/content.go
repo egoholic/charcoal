@@ -22,21 +22,21 @@ func (c *Content) PK() string {
 }
 
 func (c *Content) Title() string {
-	return c.payload().Title()
+	return c.Payload().Title()
 }
 
 func (c *Content) AssignTitle(v string) {
-	c.payload().AssignTitle(tconv.MakeStringable(v))
+	c.Payload().AssignTitle(tconv.MakeStringable(v))
 }
 
 func (c *Content) Body() string {
-	return c.payload().Body()
+	return c.Payload().Body()
 }
 
 func (c *Content) AssignBody(v string) {
-	c.payload().AssignBody(tconv.MakeStringable(v))
+	c.Payload().AssignBody(tconv.MakeStringable(v))
 }
 
-func (c *Content) payload() *chlog.Payload {
+func (c *Content) Payload() *chlog.Payload {
 	return c.snapshot.Payload()
 }
