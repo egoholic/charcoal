@@ -6,7 +6,6 @@ import (
 	"github.com/egoholic/charcoal/entity/content"
 )
 
-// in that way we hide implementation of IdentityMap pattern
 type StorePK interface{}
 type keysMap map[content.PK]StorePK
 type identityMap map[content.PK]*content.Content
@@ -31,11 +30,11 @@ func (im *IdentityMap) Add(sPK StorePK, c *content.Content) error {
 	}
 }
 
-func (im *IdentityMap) Refresh(c *content.Content) error {
+func (im *IdentityMap) RefreshWith(c *content.Content) error {
 	bPK := c.PK()
 	old := im.Get(bPK)
 	if old != nil {
-		(*im.im)[bPK] = c // naive implementations.
+		(*im.im)[bPK] = c // naive implementation.
 		return nil
 	} else {
 		return fmt.Errorf("Can't refresh %s -> %#v content.\n\tBecause updating identity not exists.", string(bPK), *c)

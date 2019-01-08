@@ -10,6 +10,8 @@ import (
 var (
 	title1 = "Title1"
 	body1  = "Body1"
+	title2 = "Title2"
+	body2  = "Body2"
 )
 
 var _ = Describe("Identity", func() {
@@ -27,7 +29,7 @@ var _ = Describe("Identity", func() {
 				It("adds new identity to the map", func() {
 					im := NewMap()
 					content := content.New(title1, body1)
-					sPK := "some-store-pk"
+					sPK := "spk1"
 					// expected before conditions
 					c := im.Get(content.PK())
 					Expect(im.GetStorePK(content.PK())).To(BeNil())
@@ -43,6 +45,30 @@ var _ = Describe("Identity", func() {
 			Context("when there is already exists identity with given key", func() {
 				It("returns error", func() {
 
+				})
+			})
+		})
+
+		Describe(".RefreshWith()", func() {
+			Context("when refreshing identity exists", func() {
+				var (
+					im  = NewMap()
+					cnt *content.Content
+					sPK = "spk1"
+				)
+
+				BeforeEach(func() {
+					cnt = content.New(title1, body1)
+					im.Add(sPK, cnt)
+				})
+
+				It("updates the identity and returns nothing", func() {
+					cnt = im.Get(content.PK(title1))
+					Expect(cnt.Body()).To(Equal(body1))
+					cnt2 := content.New(title1, body2)
+					im.RefreshWith(cnt2)
+					cnt = im.Get(content.PK(title1))
+					Expect(cnt.Body()).To(Equal(body2))
 				})
 			})
 		})
