@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/egoholic/charcoal/entity/content"
-	"github.com/egoholic/charcoal/entity/content/chlog"
 	"github.com/egoholic/charcoal/entity/content/repository/identity"
 )
 
@@ -13,27 +12,38 @@ type Repo struct {
 }
 
 func New() *Repo {
-	return &Repo{make(map[string]*content.Content)}
+	return &Repo{identity.NewMap()}
 }
 
 type InsertAdapter interface {
-	Insert(*chlog.Payload) (interface{}, error)
-}
-
-func (r *Repo) MakeInserter(i InsertAdapter) func(context.Context, *content.Content) (string, error) {
-	return func(ctx context.Context, c *content.Content) {
-		id, _ := i.Insert(c.Payload())
-		return id
-	}
+	Insert(*content.Content) (interface{}, error)
 }
 
 type FindByPKAdapter interface {
-	FindByPK(context.Context, string) (*content.Content, error)
+	FindByPK(context.Context, interface{}) (*bson.D, error)
 }
 
-func (r *Repo) MakePKFinder(f FindByPKAdapter) *content.Content {
-	return func(ctx context.Context, pk string) (*content.Content, error) {
-		c, _ := f.FindByPK(ctx, pk)
+func (r *Repo) Insert(ctx context.Context, i InsertAdapter, f FindByPKAdapter, c *content.Content) error {
+	id, err := i.Insert(c)
+	if err != nil {
+		// todo: return custom error
+	}
+
+	content, err := f.FindByPK(ctx, id)
+	if err != nil {
+		// todo: return custom error
+	}
+	r.identityMap.Add(id, content)
+	return nil
+}
+
+func (r *Repo) FindByPK(ctx context.Context, f FindByPKAdapter, pk *content.PK) (*content.Content, error) {
+		doc, err := f.FindByPK(ctx, pk)
+		if err != nil {
+			// todo: return custom error
+		}
+
+    
 		return nil, c
 	}
 }
