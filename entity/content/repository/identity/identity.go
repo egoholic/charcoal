@@ -48,7 +48,3 @@ func (im *IdentityMap) Get(bPK content.PK) *content.Content {
 func (im *IdentityMap) GetStorePK(bPK content.PK) StorePK {
 	return (*im.km)[bPK]
 }
-
-func (km *keysMap) Translate(bPK content.PK) StorePK {
-	return (*km)[bPK]
-}
