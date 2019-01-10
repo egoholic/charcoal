@@ -34,7 +34,8 @@ var _ = Describe("Content MongoDB Adapter", func() {
 					adapter := New(client)
 					cnt := ce.New(title1, body1)
 					result, _ := adapter.Insert(context.TODO(), cnt)
-					Expect(result).To(BeAssignableToTypeOf(mongo.InsertOneResult{}))
+					Expect(result).NotTo(BeNil())
+					Expect(adapter.FindByPK())
 				})
 			})
 

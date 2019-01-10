@@ -23,6 +23,7 @@ func (a *Adapter) Insert(ctx context.Context, c *content.Content) (interface{}, 
 	if err != nil {
 		panic(err)
 	}
+	client.Connect(ctx)
 	db := client.Database("charcoal")
 	collection := db.Collection("contents")
 	snapshot := bson.D{{"title", c.Title()}, {"body", c.Body()}, {"_prev", nil}}
@@ -35,7 +36,7 @@ func (a *Adapter) Insert(ctx context.Context, c *content.Content) (interface{}, 
 	return res.InsertedID, nil
 }
 
-func FindByPK(ctx context.Context, pk string) {
+func FindByPK(ctx context.Context, pk interface{}) {
 
 }
 
