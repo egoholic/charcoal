@@ -36,10 +36,28 @@ func (a *Adapter) Insert(ctx context.Context, c *content.Content) (interface{}, 
 	return res.InsertedID, nil
 }
 
-func FindByPK(ctx context.Context, pk interface{}) {
+func (a *Adapter) FindByPK(ctx context.Context, pk interface{}) (*content.Content, error) {
+	client, err := a.getClient()
+	if err != nil {
+		panic(err)
+	}
+	client.Connect(ctx)
+	db := client.Database("charcoal")
+	collection := db.Collection("contents")
+	cur, err := collection.Find(ctx, bson.M{"_id": pk})
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil, err
+	}
+}
+
+func (a *Adapter) serialize(c *content.Content) (bson.D, error) {
 
 }
 
+func (a *Adapter) deserialize(c *content.Content) (*content.Content, error) {
+
+}
 func (a *Adapter) getClient() (*mongo.Client, error) {
 	var err error
 

@@ -8,10 +8,12 @@ import (
 )
 
 var (
-	title1 = "Title1"
-	body1  = "Body1"
-	title2 = "Title2"
-	body2  = "Body2"
+	wtitle1 = "Title 1 Draft"
+	title1  = "Title1"
+	body1   = "Body1"
+	wtitle2 = "Title 2 Draft"
+	title2  = "Title2"
+	body2   = "Body2"
 )
 
 var _ = Describe("Identity", func() {
@@ -28,7 +30,7 @@ var _ = Describe("Identity", func() {
 			Context("when there is no identities with given key", func() {
 				It("adds new identity to the map", func() {
 					im := NewMap()
-					content := content.New(title1, body1)
+					content := content.New(wtitle1, title1, body1)
 					sPK := "spk1"
 					// expected before conditions
 					c := im.Get(content.PK())
@@ -58,16 +60,16 @@ var _ = Describe("Identity", func() {
 				)
 
 				BeforeEach(func() {
-					cnt = content.New(title1, body1)
+					cnt = content.New(wtitle1, title1, body1)
 					im.Add(sPK, cnt)
 				})
 
 				It("updates the identity and returns nothing", func() {
-					cnt = im.Get(content.PK(title1))
+					cnt = im.Get(content.PK(wtitle1))
 					Expect(cnt.Body()).To(Equal(body1))
-					cnt2 := content.New(title1, body2)
+					cnt2 := content.New(wtitle1, title1, body2)
 					im.RefreshWith(cnt2)
-					cnt = im.Get(content.PK(title1))
+					cnt = im.Get(content.PK(wtitle1))
 					Expect(cnt.Body()).To(Equal(body2))
 				})
 			})

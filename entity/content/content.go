@@ -5,21 +5,38 @@ import (
 	"github.com/egoholic/charcoal/framework/tconv"
 )
 
-type Content struct {
-	snapshot *chlog.Snapshot
+type Created struct {
 }
+type Updated struct {
+}
+type Reviewed struct {
+}
+type Commented struct {
+}
+type Approved struct {
+}
+
+type Content struct {
+	workingTitle string
+	snapshot     *chlog.Snapshot
+}
+
 type PK string
 
-func New(title, body string) *Content {
+func New(wtitle, title, body string) *Content {
 	s := chlog.NewSnapshot()
 	p := s.Payload()
 	p.AssignTitle(tconv.MakeStringable(title))
 	p.AssignBody(tconv.MakeStringable(body))
-	return &Content{s}
+	return &Content{wtitle, s}
 }
 
 func (c *Content) PK() PK {
-	return PK(c.Title())
+	return PK(c.WorkingTitle())
+}
+
+func (c *Content) WorkingTitle() string {
+	return c.workingTitle
 }
 
 func (c *Content) Title() string {
