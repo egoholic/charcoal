@@ -21,19 +21,11 @@ var _ = Describe("Passwords domain", func() {
 		})
 	})
 
-	Context("comparison", func() {
-		Describe(".IsEqualString()", func() {
-			p := New(pwd1)
-
-			Context("when matches string", func() {
-				It("returns true", func() {
-					Expect(p.IsEqualString(pwd1)).To(BeTrue())
-				})
-			})
-			Context("when does not match string", func() {
-				It("returns true", func() {
-					Expect(p.IsEqualString(pwd2)).To(BeFalse())
-				})
+	Context("type conversion", func() {
+		Describe(".ToString()", func() {
+			It("returns string", func() {
+				ep := EncryptedPassword("12345678")
+				Expect(ep.ToString()).To(BeAssignableToTypeOf(pwd1))
 			})
 		})
 	})

@@ -8,6 +8,6 @@ func New(p string) *EncryptedPassword {
 	return &ep
 }
 
-func (ep *EncryptedPassword) IsEqualString(p string) bool {
-	return string(*ep) == string(*New(p))
+func (ep *EncryptedPassword) ToString() string {
+	return string(*ep)
 }
