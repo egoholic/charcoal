@@ -22,17 +22,17 @@ func NewInserter(ctx context.Context, client *mongo.Client) func(*account.Accoun
 	}
 }
 
-func NewByPKFinder(ctx context.Context, client *mongo.Client) func(interface{}) (*account.Account, error) {
-	return func(sid interface{}) (*account.Account, error) {
+func NewByPKFinder(ctx context.Context, client *mongo.Client) func(string) (interface{}, *account.Account, error) {
+	return func(pk string) (interface{}, *account.Account, error) {
 		db := client.Database(config.MongoDBDatabaseName())
 		accounts := db.Collection(COLLECTION_NAME)
-		filter := bson.D{{"_id", sid}}
+		filter := bson.D{{"title", pk}}
 		res := accounts.FindOne(ctx, filter)
 		sid, a, err := Deserialize(res)
 		if err != nil {
-			return a, err
+			return sid, a, err
 		}
-		return a, err
+		return sid, a, err
 	}
 }
 

@@ -26,6 +26,13 @@ var _ = Describe("Session Entity", func() {
 	})
 
 	Context("accessors", func() {
+		Describe(".PK()", func() {
+			It("returns primary key", func() {
+				s := New(acc, ip)
+				Expect(s.PK()).To(Equal(s.Token()))
+			})
+		})
+
 		Describe(".Token()", func() {
 			It("returns token", func() {
 				s := New(acc, ip)

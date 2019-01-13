@@ -6,11 +6,6 @@ import (
 	"github.com/egoholic/charcoal/services/auth/account/repo/idmap"
 )
 
-const (
-	CACHE   = true
-	NOCACHE = false
-)
-
 type Repo struct {
 	identityMap *idmap.IdentityMap
 }
@@ -33,21 +28,21 @@ func (r *Repo) NewInserter(insert InsertAdapter) func(*account.Account) error {
 	}
 }
 
-type FindByPKAdapter func(interface{}) (*account.Account, error)
+type FindByPKAdapter func(string) (interface{}, *account.Account, error)
 
 func (r *Repo) NewByPKFinder(find FindByPKAdapter) func(string) (*account.Account, error) {
 	return func(pk string) (*account.Account, error) {
 		sid, a, ok := r.identityMap.Get(pk)
 		if ok {
 			return a, nil
-		} else {
-			a, err := find(sid)
-			if err != nil {
-				return a, err
-			}
+		}
 
-			err = r.identityMap.Add(pk, sid, a)
+		sid, a, err := find(pk)
+		if err != nil {
 			return a, err
 		}
+
+		err = r.identityMap.Add(a.PK(), sid, a)
+		return a, err
 	}
 }

@@ -23,6 +23,10 @@ func New(a *account.Account, ip net.IP) *Session {
 	return &Session{a, token, ip, lastSigninAt}
 }
 
+func (s *Session) PK() string {
+	return s.Token()
+}
+
 func (s *Session) Token() string {
 	return s.token
 }
