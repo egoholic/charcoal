@@ -29,24 +29,28 @@ var _ = Describe("Accounts Repository", func() {
 		})
 	})
 
-	Describe(".Insert()", func() {
-		It("persists given account", func() {
+	Describe(".NewInserter()", func() {
+		It("returns inserter", func() {
 			a := account.New(name1, pwd.New(pwd1))
 			repo := New()
 			client, _ := mongo.NewClient(config.MongoDBConnectionString())
 			client.Connect(context.TODO())
-			Expect(repo.Insert(a, storage.NewInserter(context.TODO(), client))).To(BeNil())
+			insert := repo.NewInserter(storage.NewInserter(context.TODO(), client))
+			Expect(insert(a)).To(BeNil())
 		})
 	})
 
-	Describe(".FindByPK()", func() {
-		It("finds an account by given PK and returns it", func() {
+	Describe(".NewByPKFinder()", func() {
+		It("returns finder", func() {
 			a := account.New(name1, pwd.New(pwd1))
 			repo := New()
 			client, _ := mongo.NewClient(config.MongoDBConnectionString())
 			client.Connect(context.TODO())
-			repo.Insert(a, storage.NewInserter(context.TODO(), client))
-			found, _ := repo.FindByPK(name1, storage.NewByPKFinder(context.TODO(), client))
+			client.Connect(context.TODO())
+			insert := repo.NewInserter(storage.NewInserter(context.TODO(), client))
+			insert(a)
+			find := repo.NewByPKFinder(storage.NewByPKFinder(context.TODO(), client))
+			found, _ := find(name1)
 			Expect(found.PK()).To(Equal(name1))
 		})
 	})
