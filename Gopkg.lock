@@ -228,8 +228,6 @@
   input-imports = [
     "github.com/mongodb/mongo-go-driver/bson",
     "github.com/mongodb/mongo-go-driver/mongo",
-    "github.com/mongodb/mongo-go-driver/mongo/options",
-    "github.com/mongodb/mongo-go-driver/mongo/readpref",
     "github.com/onsi/ginkgo",
     "github.com/onsi/gomega",
   ]
