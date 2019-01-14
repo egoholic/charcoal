@@ -35,6 +35,14 @@ func (s *Session) IP() net.IP {
 	return s.ip
 }
 
+func (s *Session) LastSigninAt() time.Time {
+	return s.lastSigninAt
+}
+
+func (s *Session) Account() *account.Account {
+	return s.account
+}
+
 func (s *Session) IsExpired() bool {
 	expiration := s.lastSigninAt.Add(REMEMBER_ME_IN_SECONDS)
 	return s.lastSigninAt.After(expiration)
