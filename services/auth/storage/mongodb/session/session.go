@@ -2,8 +2,10 @@ package session
 
 import (
 	"context"
+	"net"
 	"time"
 
+	"github.com/egoholic/charcoal/services/auth/account"
 	"github.com/egoholic/charcoal/services/auth/config"
 	"github.com/egoholic/charcoal/services/auth/session"
 	"github.com/mongodb/mongo-go-driver/bson"
@@ -39,33 +41,53 @@ func NewByPKFinder(ctx context.Context, client *mongo.Client) func(string) (inte
 	}
 }
 
+func NewByAccountFinder(ctx context.Context, client *mongo.Client) func(string) (interface{}, *session.Session, error) {
+	return func(aName string) (interface{}, *session.Session, error) {
+		db := client.Database(config.MongoDBDatabaseName())
+		sessions := db.Collection(COLLECTION_NAME)
+		filter := bson.D{{"accountName", aName}}
+		res := sessions.FindOne(ctx, filter)
+		sid, s, err := Deserialize(res)
+		if err != nil {
+			return sid, s, err
+		}
+		return sid, s, err
+	}
+}
+
 func Serialize(s *session.Session) (bson.D, error) {
-	return bson.D{{"token", s.Token()}, {"accountName", s.Account().Name()}, {"ip", s.IP().String()}, {"lastSigninAt", s.LastSigninAt().String()}}, nil
+	return bson.D{{"token", s.Token()}, {"accountName", s.Account().Name()}, {"ip", s.IP().String()}, {"lastTime", s.LastTime().String()}}, nil
 }
 
 func SerializeWithStoreID(s *session.Session, sid interface{}) (bson.D, error) {
-	return bson.D{{"_id", sid}, {"token", s.Token()}, {"accountName", s.Account().Name()}, {"ip", s.IP().String()}, {"lastSigninAt", s.LastSigninAt().String()}}, nil
-}
-
-type payload struct {
-	id           interface{}
-	token        string
-	accountName  string
-	ip           string
-	lastSignInAt time.Time
+	return bson.D{{"_id", sid}, {"token", s.Token()}, {"accountName", s.Account().Name()}, {"ip", s.IP().String()}, {"lastTime", s.LastTime().String()}}, nil
 }
 
 type Decoder interface {
 	Decode(interface{}) error
 }
 
+// For deserialization purposes only!
+type payload struct {
+	id       interface{}
+	account  *account.Account
+	token    string
+	ip       net.IP
+	lastTime time.Time
+}
+
 func Deserialize(d Decoder) (interface{}, *session.Session, error) {
-	var p payload
-	err := d.Decode(p)
+	var (
+		_p *payload
+		p  *session.Payload
+	)
+
+	err := d.Decode(_p)
 	if err != nil {
 		return nil, nil, err
 	}
-	s := session.New()
-	return p.id, a, nil
 
+	p = session.NewPayload(_p.account, _p.token, _p.ip, _p.lastTime)
+	s := session.New(p)
+	return _p.id, s, nil
 }

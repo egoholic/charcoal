@@ -20,6 +20,7 @@ type Session struct {
 	payload *Payload
 }
 
+// TODO: add validation. Payload CAN'T be invalid.
 func NewPayload(ac *account.Account, tk string, ip net.IP, lt time.Time) *Payload {
 	return &Payload{ac, tk, ip, lt}
 }

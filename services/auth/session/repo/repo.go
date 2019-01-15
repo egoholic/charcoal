@@ -9,6 +9,10 @@ type Repo struct {
 	identityMap *idmap.IdentityMap
 }
 
+func New() *Repo {
+	return &Repo{idmap.New()}
+}
+
 type InsertAdapter func(s *session.Session) (interface{}, error)
 
 func (r *Repo) NewInserter(insert InsertAdapter) func(*session.Session) error {
