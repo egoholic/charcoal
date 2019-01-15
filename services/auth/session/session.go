@@ -5,22 +5,27 @@ import (
 	"time"
 
 	"github.com/egoholic/charcoal/services/auth/account"
-	"github.com/egoholic/charcoal/services/auth/session/token"
 )
 
-const REMEMBER_ME_IN_SECONDS = 60 * 60 * 24 * 7 * time.Second
+const REMEMBER_ME_DURATION = 60 * 60 * 24 * 7 * time.Second
 
-type Session struct {
-	account      *account.Account
-	token        string
-	ip           net.IP
-	lastSigninAt time.Time
+type Payload struct {
+	Account  *account.Account
+	Token    string
+	IP       net.IP
+	LastTime time.Time
 }
 
-func New(a *account.Account, ip net.IP) *Session {
-	token := token.New()
-	lastSigninAt := time.Now()
-	return &Session{a, token, ip, lastSigninAt}
+type Session struct {
+	payload *Payload
+}
+
+func NewPayload(ac *account.Account, tk string, ip net.IP, lt time.Time) *Payload {
+	return &Payload{ac, tk, ip, lt}
+}
+
+func New(p *Payload) *Session {
+	return &Session{p}
 }
 
 func (s *Session) PK() string {
@@ -28,22 +33,23 @@ func (s *Session) PK() string {
 }
 
 func (s *Session) Token() string {
-	return s.token
+	return s.payload.Token
 }
 
 func (s *Session) IP() net.IP {
-	return s.ip
+	return s.payload.IP
 }
 
-func (s *Session) LastSigninAt() time.Time {
-	return s.lastSigninAt
+func (s *Session) LastTime() time.Time {
+	return s.payload.LastTime
 }
 
 func (s *Session) Account() *account.Account {
-	return s.account
+	return s.payload.Account
 }
 
 func (s *Session) IsExpired() bool {
-	expiration := s.lastSigninAt.Add(REMEMBER_ME_IN_SECONDS)
-	return s.lastSigninAt.After(expiration)
+	lt := s.LastTime()
+	expiration := lt.Add(REMEMBER_ME_DURATION)
+	return time.Now().After(expiration)
 }
