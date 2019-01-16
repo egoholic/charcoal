@@ -19,6 +19,6 @@ func New() *Transport {
 	return &Transport{r}
 }
 
-func (t *Transport) Run() {
+func (t *Transport) Deliver() {
 	http.Handle("/", t.router)
 }
