@@ -6,7 +6,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func Extend(r mux.Router) error {
+func Extend(r *mux.Router) error {
 	prefixed := r.PathPrefix("/signup/").Subrouter()
 	prefixed.HandleFunc("/", renderSignupForm).Methods("GET")
 	prefixed.HandleFunc("/", performSignup).Methods("POST")

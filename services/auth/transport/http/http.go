@@ -12,7 +12,7 @@ type Transport struct {
 	router *mux.Router
 }
 
-func Make() *Transport {
+func New() *Transport {
 	r := mux.NewRouter()
 	signup.Extend(r)
 	signin.Extend(r)
