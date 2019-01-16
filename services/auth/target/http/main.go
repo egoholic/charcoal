@@ -5,6 +5,6 @@ import (
 )
 
 func main() {
-	app := httpTransport.New()
-	app.Deliver()
+	transport := httpTransport.New()
+	transport.Deliver()
 }
