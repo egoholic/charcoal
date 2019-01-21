@@ -14,53 +14,57 @@ var (
 
 var _ = Describe("Validation corelib", func() {
 	Describe("creation", func() {
-		Describe("New()", func() {
+		Describe("NewNode()", func() {
 			It("returns validation node", func() {
-				Expect(New(title1)).To(BeAssignableToTypeOf(&Node{}))
+				Expect(NewNode(title1)).To(BeAssignableToTypeOf(&Node{}))
 			})
 		})
 	})
 
 	Describe("accessors", func() {
-		Describe("Title()", func() {
+		var (
+			node1 *Node
+			node2 *Node
+		)
+
+		BeforeEach(func() {
+			node1 = NewNode(title1)
+			node2 = NewNode(title2)
+		})
+
+		Describe(".Title()", func() {
 			It("returns title", func() {
-				node := New(title1)
-				Expect(node.Title()).To(Equal(title1))
+				Expect(node1.Title()).To(Equal(title1))
 			})
 		})
 
-		Describe("Messages()", func() {
+		Describe(".Messages()", func() {
 			It("returns messages", func() {
-				node := New(title1)
-				Expect(node.Messages()).To(BeAssignableToTypeOf([]string{}))
+				Expect(node1.Messages()).To(BeAssignableToTypeOf([]string{}))
 			})
 		})
 
-		Describe("Children()", func() {
+		Describe(".Children()", func() {
 			It("returns children", func() {
-				node := New(title1)
-				Expect(node.Children()).To(BeAssignableToTypeOf(map[string]*Node{}))
+				Expect(node1.Children()).To(BeAssignableToTypeOf(map[string]*Node{}))
 			})
 		})
 
-		Describe("AddMessage()", func() {
+		Describe(".AddMessage()", func() {
 			It("add message", func() {
-				node := New(title1)
-				Expect(node.Messages()).To(BeEmpty())
-				node.AddMessage(message1)
-				Expect(node.Messages()).To(HaveLen(1))
-				Expect(node.Messages()[0]).To(Equal(message1))
+				Expect(node1.Messages()).To(BeEmpty())
+				node1.AddMessage(message1)
+				Expect(node1.Messages()).To(HaveLen(1))
+				Expect(node1.Messages()[0]).To(Equal(message1))
 			})
 		})
 
-		Describe("AddChild()", func() {
+		Describe(".AddChild()", func() {
 			It("add child", func() {
-				node := New(title1)
-				childNode := New(title2)
-				Expect(node.Children()).To(BeEmpty())
-				node.AddChild(childNode)
-				Expect(node.Children()).To(HaveLen(1))
-				Expect(node.Children()[title2]).To(Equal(childNode))
+				Expect(node1.Children()).To(BeEmpty())
+				node1.AddChild(node2)
+				Expect(node1.Children()).To(HaveLen(1))
+				Expect(node1.Children()[title2]).To(Equal(node2))
 			})
 		})
 	})

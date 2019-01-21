@@ -6,7 +6,7 @@ type Node struct {
 	children map[string]*Node
 }
 
-func New(title string) *Node {
+func NewNode(title string) *Node {
 	return &Node{title, make([]string, 0), make(map[string]*Node)}
 }
 
