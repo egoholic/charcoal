@@ -7,24 +7,19 @@ import (
 const ROOT_TITLE = "signup"
 
 type Form struct {
-	formTitle            string
 	login                string
 	password             string
 	passwordConfirmation string
 	validationResult     *validation.Node
-	uniquenessChecker    uniquenessChecker
+	uniquenessChecker    UniquenessChecker
 }
 
-type uniquenessChecker interface {
+type UniquenessChecker interface {
 	IsUnique(string) bool
 }
 
-func New(title, login, password, passwordConfirmation string, checker uniquenessChecker) *Form {
-	return &Form{title, login, password, passwordConfirmation, nil, checker}
-}
-
-func (f *Form) FormTitle() string {
-	return f.formTitle
+func New(login, password, passwordConfirmation string, checker UniquenessChecker) *Form {
+	return &Form{login, password, passwordConfirmation, nil, checker}
 }
 
 func (f *Form) Login() string {

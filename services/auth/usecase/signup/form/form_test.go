@@ -14,10 +14,6 @@ var _ = Describe("Signup Form", func() {
 	})
 
 	Context("accessors", func() {
-		Describe(".FormTitle()", func() {
-
-		})
-
 		Describe(".Login()", func() {
 
 		})
