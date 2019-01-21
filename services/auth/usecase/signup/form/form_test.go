@@ -7,29 +7,31 @@ import (
 )
 
 var _ = Describe("Signup Form", func() {
-	Describe("creation", func() {
+	Context("creation", func() {
 		Describe("New()", func() {
 
 		})
 	})
 
-	Describe(".FormTitle()", func() {
+	Context("accessors", func() {
+		Describe(".FormTitle()", func() {
 
-	})
+		})
 
-	Describe(".Login()", func() {
+		Describe(".Login()", func() {
 
-	})
+		})
 
-	Describe(".Password()", func() {
+		Describe(".Password()", func() {
 
-	})
+		})
 
-	Describe(".PasswordConfirmation()", func() {
+		Describe(".PasswordConfirmation()", func() {
 
-	})
+		})
 
-	Describe(".Validate()", func() {
+		Describe(".Validate()", func() {
 
+		})
 	})
 })
