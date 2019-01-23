@@ -23,6 +23,12 @@ func NewInserter(ctx context.Context, client *mongo.Client) func(*session.Sessio
 			return nil, err
 		}
 		res, err := sessions.InsertOne(ctx, doc)
+		if err != nil {
+			return nil, err
+		}
+		if res == nil {
+			return nil, nil
+		}
 		return (*res).InsertedID, err
 	}
 }
