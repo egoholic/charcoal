@@ -4,7 +4,7 @@ go:
   - 1.11.x
   - master
 before_script:
-  - go vet ./..
+  # - go vet ./..
 script:
   - ginkgo -r
 os:
