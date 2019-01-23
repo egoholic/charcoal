@@ -18,7 +18,7 @@ func NewInserter(ctx context.Context, client *mongo.Client) func(*account.Accoun
 		accounts := db.Collection(COLLECTION_NAME)
 		doc := bson.D{{"name", a.Name()}, {"encryptedPassword", a.EncryptedPassword()}}
 		res, err := accounts.InsertOne(ctx, doc)
-		return res.InsertedID, err
+		return (*res).InsertedID, err
 	}
 }
 
