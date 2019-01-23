@@ -1,5 +1,4 @@
 language: go
-
 go:
   - 1.10.x
   - 1.11.x
@@ -8,3 +7,10 @@ before_script:
   - go vet ./..
 script:
   - ginkgo -r
+os:
+  - linux
+  - osx
+sudo: false
+dist: trusty
+install: true
+
