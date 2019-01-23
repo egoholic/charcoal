@@ -3,13 +3,19 @@ go:
   - 1.10.x
   - 1.11.x
   - master
-before_script:
-  # - go vet ./..
-script:
-  - ginkgo -r
+
 os:
   - linux
   - osx
+
+install:
+  - go get -v github.com/onsi/ginkgo/ginkgo
+  - go get -v github.com/onsi/gomega
+  - go get -v -t ./...
+  - export PATH=$PATH:$HOME/gopath/bin
+
+script: ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --cover --trace --race --compilers=2
+
 sudo: false
 dist: trusty
 install: true
