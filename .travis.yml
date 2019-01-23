@@ -1,9 +1,7 @@
 language: go
 go:
-  - 1.10.x
   - 1.11.x
   - master
-  - tip
 os:
   - linux
   - osx
@@ -11,7 +9,6 @@ os:
 install:
   - go get -v github.com/onsi/ginkgo/ginkgo
   - go get -v github.com/onsi/gomega
-  # - go get -v -t ./...
   - export PATH=$PATH:$HOME/gopath/bin
 
 script: ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --cover --trace --race --compilers=2
