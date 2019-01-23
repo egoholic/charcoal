@@ -24,7 +24,7 @@ func NewInserter(ctx context.Context, client *mongo.Client) func(*account.Accoun
 		if res == nil {
 			return nil, nil
 		}
-		return (*res).InsertedID, err
+		return res.InsertedID, err
 	}
 }
 

@@ -6,7 +6,7 @@ import (
 	"github.com/mongodb/mongo-go-driver/mongo"
 
 	"github.com/egoholic/charcoal/services/auth/config"
-	storage "github.com/egoholic/charcoal/services/auth/storage/mongodb/account"
+	adapter "github.com/egoholic/charcoal/services/auth/storage/dumb/account"
 
 	"github.com/egoholic/charcoal/services/auth/account"
 	"github.com/egoholic/charcoal/services/auth/account/pwd"
@@ -16,8 +16,9 @@ import (
 )
 
 var (
-	name1 = "Joe Rogan"
-	pwd1  = "12345678"
+	name1   = "Joe Rogan"
+	pwd1    = "12345678"
+	storage = adapter.New()
 )
 
 var _ = Describe("Accounts Repository", func() {
@@ -35,7 +36,7 @@ var _ = Describe("Accounts Repository", func() {
 			repo := New()
 			client, _ := mongo.NewClient(config.MongoDBConnectionString())
 			client.Connect(context.TODO())
-			insert := repo.NewInserter(storage.NewInserter(context.TODO(), client))
+			insert := repo.NewInserter(storage.NewInserter())
 			Expect(insert(a)).To(BeNil())
 		})
 	})
@@ -47,7 +48,7 @@ var _ = Describe("Accounts Repository", func() {
 			client, _ := mongo.NewClient(config.MongoDBConnectionString())
 			client.Connect(context.TODO())
 			client.Connect(context.TODO())
-			insert := repo.NewInserter(storage.NewInserter(context.TODO(), client))
+			insert := repo.NewInserter(storage.NewInserter())
 			insert(a)
 			find := repo.NewByPKFinder(storage.NewByPKFinder(context.TODO(), client))
 			found, _ := find(name1)

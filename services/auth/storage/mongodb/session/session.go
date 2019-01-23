@@ -29,7 +29,7 @@ func NewInserter(ctx context.Context, client *mongo.Client) func(*session.Sessio
 		if res == nil {
 			return nil, nil
 		}
-		return (*res).InsertedID, err
+		return res.InsertedID, err
 	}
 }
 
