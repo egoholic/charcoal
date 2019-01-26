@@ -21,3 +21,7 @@ func MongoDBConnectionString() string {
 func MongoDBDatabaseName() string {
 	return ServiceName()
 }
+
+func HTTPServicePort() string {
+	return ":8080"
+}

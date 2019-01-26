@@ -3,6 +3,7 @@ package http
 import (
 	"net/http"
 
+	"github.com/egoholic/charcoal/services/auth/config"
 	signin "github.com/egoholic/charcoal/services/auth/usecase/signin/endpoint/http"
 	signup "github.com/egoholic/charcoal/services/auth/usecase/signup/endpoint/http"
 	"github.com/gorilla/mux"
@@ -21,4 +22,5 @@ func New() *Transport {
 
 func (t *Transport) Deliver() {
 	http.Handle("/", t.router)
+	http.ListenAndServe(config.HTTPServicePort(), nil)
 }

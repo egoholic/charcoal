@@ -3,8 +3,8 @@ package http
 import (
 	"html/template"
 	"net/http"
+	"path/filepath"
 
-	"github.com/egoholic/charcoal/services/auth/usecase/signup/form"
 	"github.com/gorilla/mux"
 )
 
@@ -15,18 +15,21 @@ func Extend(r *mux.Router) error {
 	return nil
 }
 
-type signapFormViewModel struct {
+type SignapFormViewModel struct {
 	FormAction string
 	FormMethod string
 }
 
 func renderSignupForm(w http.ResponseWriter, r *http.Request) {
-	tFile := "./templates/signup.html.template"
-	t := template.Must(template.ParseGlob(tFile))
-	t.Execute(w, signapFormViewModel{"/signup/", http.MethodPost})
+	filePath, err := filepath.Abs("./templates/signup.html")
+	if err != nil {
+		panic(err)
+	}
+	t, err := template.ParseFiles(filePath)
+	t.Execute(w, &SignapFormViewModel{"/signup/", http.MethodPost})
 	w.WriteHeader(200)
 }
 
 func performSignup(w http.ResponseWriter, r *http.Request) {
-	form := form.New(r.Body.)
+	//form := form.New(r.Body.)
 }
