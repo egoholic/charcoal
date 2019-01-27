@@ -1,9 +1,7 @@
 package router
 
 import (
-	"github.com/egoholic/charcoal/corelib/http/router/handler"
 	"github.com/egoholic/charcoal/corelib/http/router/params"
-	"github.com/egoholic/charcoal/corelib/http/router/response"
 )
 
 const (
@@ -18,68 +16,84 @@ type Router struct {
 	root *Node
 }
 
-type Node struct {
-	pathChunk    string
-	children     map[string]*Node
-	verbHandlers map[string]*handler.Handler
-}
-
 func New() *Router {
-	children := map[string]*Node{}
-	handlers := map[string]*handler.Handler{}
-	Node := &Node{"/", children, handlers}
-	return &Router{Node}
+	return &Router{NewNode("")}
 }
 
 func (r *Router) Root() *Node {
 	return r.root
 }
 
-func (r *Router) Handle(resp *response.Response, p *params.Params) {
-	r.Root().Handle(resp, p, p.NewIterator())
+func (r *Router) Handler(p *params.Params) interface{} {
+	return r.Root().Handler(p, p.NewIterator())
 }
 
-func (n *Node) Node(chunk string) *Node {
-	var node *Node
+type Node struct {
+	pathChunk    string
+	children     map[string]*Node
+	verbHandlers map[string]interface{}
+}
 
+func NewNode(chunk string) *Node {
+	return &Node{chunk, map[string]*Node{}, map[string]interface{}{}}
+}
+
+func (n *Node) Sub(chunk string) *Node {
+	var node *Node
 	node = n.children[chunk]
 	if node != nil {
 		return node
 	}
 
-	children := map[string]*Node{}
-	children[chunk] = node
-	handlers := map[string]*handler.Handler{}
-	node = &Node{chunk, children, handlers}
+	node = NewNode(chunk)
+	n.children[chunk] = node
 	return node
 }
 
-func (n *Node) Handle(r *response.Response, p *params.Params, iter *params.PathChunksIterator) {
+func (n *Node) Handler(p *params.Params, iter *params.PathChunksIterator) interface{} {
 	if iter.HasNext() {
 		chunk, _ := iter.Next()
-		child := n.children[chunk]
-		child.Handle(r, p, iter)
+		if child, ok := n.children[chunk]; ok {
+			return child.Handler(p, iter)
+		}
+		return nil
 	}
-
-	n.verbHandlers[p.Verb()].Handle(r, p)
+	return n.verbHandlers[p.Verb()]
 }
 
-func (n *Node) GET(fn handler.HandlingFunc, d string) {
-	n.verbHandlers[GET] = handler.New(fn, d)
+func (n *Node) GET(fn interface{}, d string) {
+	n.verbHandlers[GET] = newHandler(fn, d)
 }
 
-func (n *Node) POST(fn handler.HandlingFunc, d string) {
-	n.verbHandlers[POST] = handler.New(fn, d)
+func (n *Node) POST(fn interface{}, d string) {
+	n.verbHandlers[POST] = newHandler(fn, d)
 }
 
-func (n *Node) PUT(fn handler.HandlingFunc, d string) {
-	n.verbHandlers[PUT] = handler.New(fn, d)
+func (n *Node) PUT(fn interface{}, d string) {
+	n.verbHandlers[PUT] = newHandler(fn, d)
 }
 
-func (n *Node) PATCH(fn handler.HandlingFunc, d string) {
-	n.verbHandlers[PATCH] = handler.New(fn, d)
+func (n *Node) PATCH(fn interface{}, d string) {
+	n.verbHandlers[PATCH] = newHandler(fn, d)
 }
 
-func (n *Node) DELETE(fn handler.HandlingFunc, d string) {
-	n.verbHandlers[DELETE] = handler.New(fn, d)
+func (n *Node) DELETE(fn interface{}, d string) {
+	n.verbHandlers[DELETE] = newHandler(fn, d)
+}
+
+type Handler struct {
+	handlingFunction interface{}
+	desription       string
+}
+
+func newHandler(fn interface{}, description string) *Handler {
+	return &Handler{fn, description}
+}
+
+func (h *Handler) HandlingFunction() interface{} {
+	return h.handlingFunction
+}
+
+func (h *Handler) Description() string {
+	return h.desription
 }

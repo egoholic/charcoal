@@ -19,13 +19,22 @@ type Params struct {
 }
 
 func New(path, verb string, form Form) *Params {
-	pathChunks := strings.Split(path, "/")
+	var chunks []string
+	if path == "/" {
+		chunks = []string{""}
+	} else {
+		chunks = strings.Split(path, "/")
+	}
+
 	queryParams := map[string]interface{}{}
-	return &Params{path, pathChunks, verb, queryParams, form}
+	return &Params{path, chunks, verb, queryParams, form}
 }
 
 func (p *Params) Path() string {
 	return p.path
+}
+func (p *Params) PathChunks() []string {
+	return p.pathChunks
 }
 
 func (p *Params) Verb() string {
@@ -42,11 +51,13 @@ type PathChunksIterator struct {
 }
 
 func (i *PathChunksIterator) Next() (string, error) {
-	return i.pathChunks[i.cursor+1], nil
+	i.cursor++
+	return i.Current(), nil
 }
 
 func (i *PathChunksIterator) HasNext() bool {
-	return len(i.pathChunks)-1 < i.cursor
+	max := len(i.pathChunks) - 1
+	return i.cursor < max
 }
 
 func (i *PathChunksIterator) Current() string {
