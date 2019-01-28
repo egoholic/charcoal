@@ -1,26 +1,27 @@
 package http
 
 import (
+	"log"
 	"net/http"
 
-	"github.com/egoholic/charcoal/services/auth/config"
+	"github.com/egoholic/charcoal/corelib/http/router"
+	"github.com/egoholic/charcoal/corelib/http/router/net/http/adapter"
+
 	signin "github.com/egoholic/charcoal/services/auth/usecase/signin/endpoint/http"
 	signup "github.com/egoholic/charcoal/services/auth/usecase/signup/endpoint/http"
-	"github.com/gorilla/mux"
 )
 
 type Transport struct {
-	router *mux.Router
+	router *router.Router
 }
 
 func New() *Transport {
-	r := mux.NewRouter()
-	signup.Extend(r)
-	signin.Extend(r)
+	r := router.New()
+	signin.Extend(r.Root())
+	signup.Extend(r.Root())
 	return &Transport{r}
 }
 
 func (t *Transport) Deliver() {
-	http.Handle("/", t.router)
-	http.ListenAndServe(config.HTTPServicePort(), nil)
+	log.Fatal(http.ListenAndServe(":8080", adapter.NewHandler(t.router)))
 }

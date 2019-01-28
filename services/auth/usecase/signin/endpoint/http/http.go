@@ -3,13 +3,13 @@ package http
 import (
 	"net/http"
 
-	"github.com/gorilla/mux"
+	"github.com/egoholic/charcoal/corelib/http/router"
 )
 
-func Extend(r *mux.Router) error {
-	prefixed := r.PathPrefix("/signin/").Subrouter()
-	prefixed.HandleFunc("/", renderSigninForm).Methods("GET")
-	prefixed.HandleFunc("/", performSignin).Methods("POST")
+func Extend(node *router.Node) error {
+	signin := node.Sub("signin")
+	signin.GET(renderSigninForm, "Renders sign in form.")
+	signin.POST(performSignin, "Performs sign in.")
 	return nil
 }
 

@@ -5,13 +5,13 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/gorilla/mux"
+	"github.com/egoholic/charcoal/corelib/http/router"
 )
 
-func Extend(r *mux.Router) error {
-	prefixed := r.PathPrefix("/signup/").Subrouter()
-	prefixed.HandleFunc("/", renderSignupForm).Methods("GET")
-	prefixed.HandleFunc("/", performSignup).Methods("POST")
+func Extend(node *router.Node) error {
+	signup := node.Sub("signup")
+	signup.GET(renderSignupForm, "Renders sign up form")
+	signup.POST(performSignup, "Performs sign up.")
 	return nil
 }
 
