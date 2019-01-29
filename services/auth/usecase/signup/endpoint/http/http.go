@@ -1,9 +1,7 @@
 package http
 
 import (
-	"html/template"
 	"net/http"
-	"path/filepath"
 
 	"github.com/egoholic/charcoal/corelib/http/router"
 )
@@ -21,12 +19,13 @@ type SignapFormViewModel struct {
 }
 
 func renderSignupForm(w http.ResponseWriter, r *http.Request) {
-	filePath, err := filepath.Abs("./templates/signup.html")
-	if err != nil {
-		panic(err)
-	}
-	t, err := template.ParseFiles(filePath)
-	t.Execute(w, &SignapFormViewModel{"/signup/", http.MethodPost})
+	// filePath, err := filepath.Abs("./templates/signup.html")
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// t, err := template.ParseFiles(filePath)
+	// t.Execute(w, &SignapFormViewModel{"/signup/", http.MethodPost})
+	w.Write([]byte("hello"))
 	w.WriteHeader(200)
 }
 
