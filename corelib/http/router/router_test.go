@@ -2,11 +2,14 @@ package router_test
 
 import (
 	"github.com/egoholic/charcoal/corelib/http/router/params"
+	"github.com/egoholic/charcoal/corelib/http/router/response"
 
 	. "github.com/egoholic/charcoal/corelib/http/router"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
+
+var DumbHandler = func(_ *params.Params, _ *response.Response) {}
 
 var _ = Describe("Router", func() {
 	Context("creation", func() {
@@ -31,29 +34,23 @@ var _ = Describe("Router", func() {
 			Context("when route exists", func() {
 				It("returns handler", func() {
 					r := New()
-					handler := "handler"
 					description := "description"
 
 					prms := params.New("/", GET, nil)
-					r.Root().GET(handler, description)
+					r.Root().GET(DumbHandler, description)
 					h := r.Handler(prms)
 					Expect(h).To(BeAssignableToTypeOf(&Handler{}))
-					hdlr, ok := h.(*Handler)
-					Expect(ok).To(BeTrue())
-					Expect(hdlr.HandlingFunction()).To(Equal(handler))
-					Expect(hdlr.Description()).To(Equal(description))
+					Expect(h.HandlingFunction()).To(BeEquivalentTo(DumbHandler))
+					Expect(h.Description()).To(Equal(description))
 
-					handler2 := "handler2"
 					description2 := "description2"
 					prms2 := params.New("/articles", GET, nil)
 
-					r.Root().Sub("articles").GET(handler2, description2)
+					r.Root().Sub("articles").GET(DumbHandler, description2)
 					h = r.Handler(prms2)
 					Expect(h).To(BeAssignableToTypeOf(&Handler{}))
-					hdlr, ok = h.(*Handler)
-					Expect(ok).To(BeTrue())
-					Expect(hdlr.HandlingFunction()).To(Equal(handler2))
-					Expect(hdlr.Description()).To(Equal(description2))
+					Expect(h.HandlingFunction()).To(BeEquivalentTo(DumbHandler))
+					Expect(h.Description()).To(Equal(description2))
 				})
 			})
 
@@ -79,6 +76,7 @@ var _ = Describe("Router", func() {
 		})
 
 		Context("definition", func() {
+
 			Describe(".Sub()", func() {
 				Context("when node with given path chunk exists", func() {
 					It("returns existing Node", func() {
@@ -99,7 +97,7 @@ var _ = Describe("Router", func() {
 				It("defines GET request handler", func() {
 					params := params.New("/articles", "GET", nil)
 					Expect(router.Handler(params)).To(BeNil())
-					root.Sub("articles").GET("handler1", "description1")
+					root.Sub("articles").GET(DumbHandler, "description1")
 					Expect(router.Handler(params)).NotTo(BeNil())
 				})
 			})
@@ -108,7 +106,7 @@ var _ = Describe("Router", func() {
 				It("defines POST request handler", func() {
 					params := params.New("/articles", "POST", nil)
 					Expect(router.Handler(params)).To(BeNil())
-					root.Sub("articles").POST("handler1", "description1")
+					root.Sub("articles").POST(DumbHandler, "description1")
 					Expect(router.Handler(params)).NotTo(BeNil())
 				})
 			})
@@ -117,7 +115,7 @@ var _ = Describe("Router", func() {
 				It("defines PUT request handler", func() {
 					params := params.New("/", "PUT", nil)
 					Expect(router.Handler(params)).To(BeNil())
-					root.PUT("handler1", "description1")
+					root.PUT(DumbHandler, "description1")
 					Expect(router.Handler(params)).NotTo(BeNil())
 				})
 			})
@@ -126,7 +124,7 @@ var _ = Describe("Router", func() {
 				It("defines PATCH request handler", func() {
 					params := params.New("/", "PATCH", nil)
 					Expect(router.Handler(params)).To(BeNil())
-					root.PATCH("handler1", "description1")
+					root.PATCH(DumbHandler, "description1")
 					Expect(router.Handler(params)).NotTo(BeNil())
 				})
 			})
@@ -135,7 +133,7 @@ var _ = Describe("Router", func() {
 				It("defines DELETE request handler", func() {
 					params := params.New("/articles", "DELETE", nil)
 					Expect(router.Handler(params)).To(BeNil())
-					root.Sub("articles").DELETE("handler1", "description1")
+					root.Sub("articles").DELETE(DumbHandler, "description1")
 					Expect(router.Handler(params)).NotTo(BeNil())
 				})
 			})

@@ -57,11 +57,11 @@ func (m *Mock) WriteHeader(statusCode int) {
 }
 
 var _ = Describe("net/http server adapter", func() {
-	Describe("Handler", func() {
+	Describe("Adapter", func() {
 		Context("creation", func() {
-			Describe("NewHandler", func() {
-				It("returns handler", func() {
-					Expect(NewHandler(router.New())).To(BeAssignableToTypeOf(&Handler{}))
+			Describe("New", func() {
+				It("returns adapter", func() {
+					Expect(New(router.New())).To(BeAssignableToTypeOf(&Adapter{}))
 				})
 			})
 		})
@@ -72,14 +72,16 @@ var _ = Describe("net/http server adapter", func() {
 					r := router.New()
 					root := r.Root()
 					root.GET(func(w http.ResponseWriter, r *http.Request) {
+						fmt.Println("!called!")
 						body := make([]byte, 32)
 						r.Body.Read(body)
 						r.Body.Close()
 						str := fmt.Sprintf("Hello `%s`!", body)
+						fmt.Println("\tcalled!", str)
 						w.Write([]byte(str))
 					}, "welcomes")
 
-					handler := NewHandler(r)
+					handler := New(r)
 					mock := NewMock([]byte("James"))
 					Expect(string(mock.ResponseData)).To(BeEmpty())
 					request, _ := http.NewRequest("GET", "/", mock)

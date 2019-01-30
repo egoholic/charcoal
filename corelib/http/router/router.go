@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/egoholic/charcoal/corelib/http/router/params"
+	"github.com/egoholic/charcoal/corelib/http/router/response"
 )
 
 const (
@@ -16,6 +17,8 @@ type Router struct {
 	root *Node
 }
 
+type HandlingFunction = func(*params.Params, *response.Response)
+
 func New() *Router {
 	return &Router{NewNode("")}
 }
@@ -24,18 +27,18 @@ func (r *Router) Root() *Node {
 	return r.root
 }
 
-func (r *Router) Handler(p *params.Params) interface{} {
+func (r *Router) Handler(p *params.Params) *Handler {
 	return r.Root().Handler(p, p.NewIterator())
 }
 
 type Node struct {
 	pathChunk    string
 	children     map[string]*Node
-	verbHandlers map[string]interface{}
+	verbHandlers map[string]*Handler
 }
 
 func NewNode(chunk string) *Node {
-	return &Node{chunk, map[string]*Node{}, map[string]interface{}{}}
+	return &Node{chunk, map[string]*Node{}, map[string]*Handler{}}
 }
 
 func (n *Node) Sub(chunk string) *Node {
@@ -50,7 +53,7 @@ func (n *Node) Sub(chunk string) *Node {
 	return node
 }
 
-func (n *Node) Handler(p *params.Params, iter *params.PathChunksIterator) interface{} {
+func (n *Node) Handler(p *params.Params, iter *params.PathChunksIterator) *Handler {
 	if iter.HasNext() {
 		chunk, _ := iter.Next()
 		if child, ok := n.children[chunk]; ok {
@@ -61,36 +64,36 @@ func (n *Node) Handler(p *params.Params, iter *params.PathChunksIterator) interf
 	return n.verbHandlers[p.Verb()]
 }
 
-func (n *Node) GET(fn interface{}, d string) {
+func (n *Node) GET(fn HandlingFunction, d string) {
 	n.verbHandlers[GET] = newHandler(fn, d)
 }
 
-func (n *Node) POST(fn interface{}, d string) {
+func (n *Node) POST(fn HandlingFunction, d string) {
 	n.verbHandlers[POST] = newHandler(fn, d)
 }
 
-func (n *Node) PUT(fn interface{}, d string) {
+func (n *Node) PUT(fn HandlingFunction, d string) {
 	n.verbHandlers[PUT] = newHandler(fn, d)
 }
 
-func (n *Node) PATCH(fn interface{}, d string) {
+func (n *Node) PATCH(fn HandlingFunction, d string) {
 	n.verbHandlers[PATCH] = newHandler(fn, d)
 }
 
-func (n *Node) DELETE(fn interface{}, d string) {
+func (n *Node) DELETE(fn HandlingFunction, d string) {
 	n.verbHandlers[DELETE] = newHandler(fn, d)
 }
 
 type Handler struct {
-	handlingFunction interface{}
+	handlingFunction HandlingFunction
 	desription       string
 }
 
-func newHandler(fn interface{}, description string) *Handler {
+func newHandler(fn HandlingFunction, description string) *Handler {
 	return &Handler{fn, description}
 }
 
-func (h *Handler) HandlingFunction() interface{} {
+func (h *Handler) HandlingFunction() HandlingFunction {
 	return h.handlingFunction
 }
 
