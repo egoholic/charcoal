@@ -4,12 +4,12 @@ import (
 	"github.com/egoholic/charcoal/corelib/http/router/params"
 	"github.com/egoholic/charcoal/corelib/http/router/response"
 
+	. "github.com/egoholic/charcoal/corelib/http/router/test/helper"
+
 	. "github.com/egoholic/charcoal/corelib/http/router"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
-
-var DumbHandler = func(_ *params.Params, _ *response.Response) {}
 
 var _ = Describe("Router", func() {
 	Context("creation", func() {
@@ -35,21 +35,37 @@ var _ = Describe("Router", func() {
 				It("returns handler", func() {
 					r := New()
 					description := "description"
-
-					prms := params.New("/", GET, nil)
+					resp := NewTestResponse()
+					_prms := map[string][]string{}
+					_prms["header"] = []string{"1"}
+					_prms["value"] = []string{"test"}
+					_prms["body"] = []string{"TestBody"}
+					prms := params.New("/", GET, _prms, nil)
 					r.Root().GET(DumbHandler, description)
 					h := r.Handler(prms)
 					Expect(h).To(BeAssignableToTypeOf(&Handler{}))
-					Expect(h.HandlingFunction()).To(BeEquivalentTo(DumbHandler))
+					handlingFunc := h.HandlingFunction()
+					Expect(string(resp.Body())).To(Equal(""))
+					handlingFunc(prms, resp)
+					Expect(resp.Body().String()).To(Equal("TestBody"))
+					Expect(resp.Status()).To(Equal(200))
 					Expect(h.Description()).To(Equal(description))
 
+					_prms2 := map[string][]string{}
+					_prms2["header"] = []string{"1"}
+					_prms2["value"] = []string{"test"}
+					_prms2["body"] = []string{"TestBody"}
 					description2 := "description2"
-					prms2 := params.New("/articles", GET, nil)
+					prms2 := params.New("/articles", GET, _prms2, nil)
+					resp2 := response.New()
 
 					r.Root().Sub("articles").GET(DumbHandler, description2)
 					h = r.Handler(prms2)
 					Expect(h).To(BeAssignableToTypeOf(&Handler{}))
-					Expect(h.HandlingFunction()).To(BeEquivalentTo(DumbHandler))
+					handlingFunc2 := h.HandlingFunction()
+					Expect(resp2.Body().String()).To(Equal(""))
+					handlingFunc2(prms2, resp2)
+					Expect(resp2.Body().String()).To(Equal("TestBody"))
 					Expect(h.Description()).To(Equal(description2))
 				})
 			})
@@ -57,7 +73,7 @@ var _ = Describe("Router", func() {
 			Context("when route does not exist", func() {
 				It("returns nil", func() {
 					r := New()
-					params := params.New("/", GET, nil)
+					params := params.New("/", GET, map[string][]string{}, nil)
 					Expect(r.Handler(params)).To(BeNil())
 				})
 			})
@@ -95,7 +111,7 @@ var _ = Describe("Router", func() {
 
 			Describe(".GET()", func() {
 				It("defines GET request handler", func() {
-					params := params.New("/articles", "GET", nil)
+					params := params.New("/articles", "GET", map[string][]string{}, nil)
 					Expect(router.Handler(params)).To(BeNil())
 					root.Sub("articles").GET(DumbHandler, "description1")
 					Expect(router.Handler(params)).NotTo(BeNil())
@@ -104,7 +120,7 @@ var _ = Describe("Router", func() {
 
 			Describe(".POST()", func() {
 				It("defines POST request handler", func() {
-					params := params.New("/articles", "POST", nil)
+					params := params.New("/articles", "POST", map[string][]string{}, nil)
 					Expect(router.Handler(params)).To(BeNil())
 					root.Sub("articles").POST(DumbHandler, "description1")
 					Expect(router.Handler(params)).NotTo(BeNil())
@@ -113,7 +129,7 @@ var _ = Describe("Router", func() {
 
 			Describe(".PUT()", func() {
 				It("defines PUT request handler", func() {
-					params := params.New("/", "PUT", nil)
+					params := params.New("/", "PUT", map[string][]string{}, nil)
 					Expect(router.Handler(params)).To(BeNil())
 					root.PUT(DumbHandler, "description1")
 					Expect(router.Handler(params)).NotTo(BeNil())
@@ -122,7 +138,7 @@ var _ = Describe("Router", func() {
 
 			Describe(".PATCH()", func() {
 				It("defines PATCH request handler", func() {
-					params := params.New("/", "PATCH", nil)
+					params := params.New("/", "PATCH", map[string][]string{}, nil)
 					Expect(router.Handler(params)).To(BeNil())
 					root.PATCH(DumbHandler, "description1")
 					Expect(router.Handler(params)).NotTo(BeNil())
@@ -131,7 +147,7 @@ var _ = Describe("Router", func() {
 
 			Describe(".DELETE()", func() {
 				It("defines DELETE request handler", func() {
-					params := params.New("/articles", "DELETE", nil)
+					params := params.New("/articles", "DELETE", map[string][]string{}, nil)
 					Expect(router.Handler(params)).To(BeNil())
 					root.Sub("articles").DELETE(DumbHandler, "description1")
 					Expect(router.Handler(params)).NotTo(BeNil())

@@ -11,14 +11,14 @@ type Form interface {
 }
 
 type Params struct {
-	path        string
-	pathChunks  []string
-	verb        string
-	queryParams map[string]interface{}
-	form        Form
+	path       string
+	pathChunks []string
+	verb       string
+	params     map[string][]string
+	formObj    Form
 }
 
-func New(path, verb string, form Form) *Params {
+func New(path, verb string, params map[string][]string, form Form) *Params {
 	var chunks []string
 	if path == "/" {
 		chunks = []string{""}
@@ -26,19 +26,27 @@ func New(path, verb string, form Form) *Params {
 		chunks = strings.Split(path, "/")
 	}
 
-	queryParams := map[string]interface{}{}
-	return &Params{path, chunks, verb, queryParams, form}
+	return &Params{path, chunks, verb, params, form}
 }
 
 func (p *Params) Path() string {
 	return p.path
 }
+
 func (p *Params) PathChunks() []string {
 	return p.pathChunks
 }
 
 func (p *Params) Verb() string {
 	return p.verb
+}
+
+func (p *Params) Param(pname string) []string {
+	if value, ok := p.params[pname]; ok {
+		return value
+	}
+
+	return []string{}
 }
 
 func (p *Params) NewIterator() *PathChunksIterator {

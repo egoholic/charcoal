@@ -9,7 +9,7 @@ import (
 )
 
 func NewParams(r *http.Request, form params.Form) *params.Params {
-	return params.New(r.RequestURI, r.Method, form)
+	return params.New(r.RequestURI, r.Method, map[string][]string{}, form)
 }
 
 func NewResponse(w http.ResponseWriter) *response.Response {
@@ -26,7 +26,12 @@ func New(r *router.Router) http.Handler {
 
 func (a *Adapter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	prms := NewParams(r, nil)
-	response := response.New()
+	resp := response.New()
 	h := a.router.Handler(prms)
-	h(params, response)
+	if h != nil {
+		h.HandlingFunction()(prms, resp)
+	} else {
+		w.Write([]byte("Not found!"))
+		w.WriteHeader(404)
+	}
 }

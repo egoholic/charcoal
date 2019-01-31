@@ -17,7 +17,7 @@ var _ = Describe("Params", func() {
 	Context("creation", func() {
 		Describe("New()", func() {
 			It("returns params", func() {
-				p := New(path1, method1, nil)
+				p := New(path1, method1, map[string][]string{}, nil)
 				Expect(p).To(BeAssignableToTypeOf(&Params{}))
 				Expect(p.Path()).To(Equal(path1))
 				Expect(p.Verb()).To(Equal(method1))
@@ -27,7 +27,7 @@ var _ = Describe("Params", func() {
 
 	Context("accessors", func() {
 		BeforeEach(func() {
-			params = New(path1, method1, nil)
+			params = New(path1, method1, map[string][]string{}, nil)
 		})
 
 		Describe(".Path()", func() {
@@ -51,7 +51,7 @@ var _ = Describe("Params", func() {
 
 	Describe(".NewIterator()", func() {
 		It("returns iterator", func() {
-			params = New(path1, method1, nil)
+			params = New(path1, method1, map[string][]string{}, nil)
 			Expect(params.NewIterator()).To(BeAssignableToTypeOf(&PathChunksIterator{}))
 		})
 	})
@@ -60,7 +60,7 @@ var _ = Describe("Params", func() {
 		var iterator *PathChunksIterator
 
 		BeforeEach(func() {
-			params = New(path1, method1, nil)
+			params = New(path1, method1, map[string][]string{}, nil)
 			iterator = params.NewIterator()
 		})
 
