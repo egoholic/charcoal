@@ -1,8 +1,9 @@
 package router
 
 import (
+	"net/http"
+
 	"github.com/egoholic/charcoal/corelib/http/router/params"
-	"github.com/egoholic/charcoal/corelib/http/router/response"
 )
 
 const (
@@ -17,8 +18,6 @@ type Router struct {
 	root *Node
 }
 
-type HandlingFunction = func(*params.Params, *response.Response)
-
 func New() *Router {
 	return &Router{NewNode("")}
 }
@@ -29,6 +28,23 @@ func (r *Router) Root() *Node {
 
 func (r *Router) Handler(p *params.Params) *Handler {
 	return r.Root().Handler(p, p.NewIterator())
+}
+
+type Handler struct {
+	handlerFunc *http.HandlerFunc
+	desription  string
+}
+
+func newHandler(fn http.HandlerFunc, desc string) *Handler {
+	return &Handler{&fn, desc}
+}
+
+func (h *Handler) HandlerFunc() http.HandlerFunc {
+	return *h.handlerFunc
+}
+
+func (h *Handler) Description() string {
+	return h.desription
 }
 
 type Node struct {
@@ -64,39 +80,22 @@ func (n *Node) Handler(p *params.Params, iter *params.PathChunksIterator) *Handl
 	return n.verbHandlers[p.Verb()]
 }
 
-func (n *Node) GET(fn HandlingFunction, d string) {
+func (n *Node) GET(fn http.HandlerFunc, d string) {
 	n.verbHandlers[GET] = newHandler(fn, d)
 }
 
-func (n *Node) POST(fn HandlingFunction, d string) {
+func (n *Node) POST(fn http.HandlerFunc, d string) {
 	n.verbHandlers[POST] = newHandler(fn, d)
 }
 
-func (n *Node) PUT(fn HandlingFunction, d string) {
+func (n *Node) PUT(fn http.HandlerFunc, d string) {
 	n.verbHandlers[PUT] = newHandler(fn, d)
 }
 
-func (n *Node) PATCH(fn HandlingFunction, d string) {
+func (n *Node) PATCH(fn http.HandlerFunc, d string) {
 	n.verbHandlers[PATCH] = newHandler(fn, d)
 }
 
-func (n *Node) DELETE(fn HandlingFunction, d string) {
+func (n *Node) DELETE(fn http.HandlerFunc, d string) {
 	n.verbHandlers[DELETE] = newHandler(fn, d)
-}
-
-type Handler struct {
-	handlingFunction HandlingFunction
-	desription       string
-}
-
-func newHandler(fn HandlingFunction, description string) *Handler {
-	return &Handler{fn, description}
-}
-
-func (h *Handler) HandlingFunction() HandlingFunction {
-	return h.handlingFunction
-}
-
-func (h *Handler) Description() string {
-	return h.desription
 }
