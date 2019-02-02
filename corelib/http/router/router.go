@@ -18,6 +18,8 @@ type Router struct {
 	root *Node
 }
 
+type HandlerFunc func(w http.ResponseWriter, r *http.Request, p *params.Params)
+
 func New() *Router {
 	return &Router{NewNode("")}
 }
@@ -30,16 +32,20 @@ func (r *Router) Handler(p *params.Params) *Handler {
 	return r.Root().Handler(p, p.NewIterator())
 }
 
+func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	//
+}
+
 type Handler struct {
-	handlerFunc *http.HandlerFunc
+	handlerFunc *HandlerFunc
 	desription  string
 }
 
-func newHandler(fn http.HandlerFunc, desc string) *Handler {
+func newHandler(fn HandlerFunc, desc string) *Handler {
 	return &Handler{&fn, desc}
 }
 
-func (h *Handler) HandlerFunc() http.HandlerFunc {
+func (h *Handler) HandlerFunc() HandlerFunc {
 	return *h.handlerFunc
 }
 
@@ -80,22 +86,22 @@ func (n *Node) Handler(p *params.Params, iter *params.PathChunksIterator) *Handl
 	return n.verbHandlers[p.Verb()]
 }
 
-func (n *Node) GET(fn http.HandlerFunc, d string) {
+func (n *Node) GET(fn HandlerFunc, d string) {
 	n.verbHandlers[GET] = newHandler(fn, d)
 }
 
-func (n *Node) POST(fn http.HandlerFunc, d string) {
+func (n *Node) POST(fn HandlerFunc, d string) {
 	n.verbHandlers[POST] = newHandler(fn, d)
 }
 
-func (n *Node) PUT(fn http.HandlerFunc, d string) {
+func (n *Node) PUT(fn HandlerFunc, d string) {
 	n.verbHandlers[PUT] = newHandler(fn, d)
 }
 
-func (n *Node) PATCH(fn http.HandlerFunc, d string) {
+func (n *Node) PATCH(fn HandlerFunc, d string) {
 	n.verbHandlers[PATCH] = newHandler(fn, d)
 }
 
-func (n *Node) DELETE(fn http.HandlerFunc, d string) {
+func (n *Node) DELETE(fn HandlerFunc, d string) {
 	n.verbHandlers[DELETE] = newHandler(fn, d)
 }

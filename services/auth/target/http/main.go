@@ -3,15 +3,13 @@ package main
 import (
 	"net/http"
 
-	"github.com/egoholic/charcoal/corelib/http/router/net/http/adapter"
-
 	"github.com/egoholic/charcoal/corelib/http/router"
 )
 
 func main() {
 	r := router.New()
-	r.Root().GET((&h{}).ServeHTTP, "desc")
-	http.ListenAndServe(":8080", adapter.NewHandler(r))
+	// r.Root().GET(, "desc")
+	http.ListenAndServe(":8080", r)
 }
 
 type h struct{}

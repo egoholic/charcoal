@@ -2,23 +2,16 @@ package params
 
 import (
 	"strings"
-
-	"github.com/egoholic/charcoal/corelib/validation"
 )
-
-type Form interface {
-	Validate(interface{}) *validation.Node
-}
 
 type Params struct {
 	path       string
 	pathChunks []string
 	verb       string
 	params     map[string][]string
-	formObj    Form
 }
 
-func New(path, verb string, params map[string][]string, form Form) *Params {
+func New(path, verb string, params map[string][]string) *Params {
 	var chunks []string
 	if path == "/" {
 		chunks = []string{""}
@@ -26,7 +19,7 @@ func New(path, verb string, params map[string][]string, form Form) *Params {
 		chunks = strings.Split(path, "/")
 	}
 
-	return &Params{path, chunks, verb, params, form}
+	return &Params{path, chunks, verb, params}
 }
 
 func (p *Params) Path() string {
