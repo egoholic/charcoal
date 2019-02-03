@@ -1,6 +1,7 @@
 package helper
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/egoholic/charcoal/corelib/http/router/params"
@@ -9,7 +10,10 @@ import (
 func TestHandlerFunc(w http.ResponseWriter, r *http.Request, p *params.Params) {
 	w.WriteHeader(200)
 	w.Header().Add("TEST-HEADER", p.Param("header")[0])
-	w.Write([]byte("hello!"))
+	_, err := w.Write([]byte("hello!"))
+	if err != nil {
+		fmt.Printf("\n\t\tERROR: %s\n\n", err.Error())
+	}
 	var body = []byte{}
 	r.Body.Read(body)
 	w.Write(body)

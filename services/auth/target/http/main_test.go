@@ -1,6 +1,7 @@
 package main_test
 
 import (
+	"fmt"
 	"net/http"
 	"os/exec"
 
@@ -30,7 +31,10 @@ var _ = Describe("Auth HTTP servise", func() {
 	Describe("GET /signup", func() {
 		It("renders signup form successfully", func() {
 			var response *http.Response
-			response, err = http.Get("localhost:8080/signup")
+			response, err = http.Get("http://localhost:8080/test")
+			if err != nil {
+				fmt.Printf("\n\n\n\tERROR: %s\n\n", err.Error())
+			}
 			Expect(response).NotTo(BeNil())
 			Expect(response.Status).To(Equal(""))
 			Expect(response.Header).To(Equal(nil))

@@ -33,7 +33,16 @@ func (r *Router) Handler(p *params.Params) *Handler {
 }
 
 func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	//
+	p := params.New(req.URL.String(), req.Method, map[string][]string{})
+	handler := r.Handler(p)
+	if handler == nil {
+		return
+	}
+
+	fn := handler.HandlerFunc()
+	if fn != nil {
+		(*fn)(w, req, p)
+	}
 }
 
 type Handler struct {
@@ -45,8 +54,8 @@ func newHandler(fn HandlerFunc, desc string) *Handler {
 	return &Handler{&fn, desc}
 }
 
-func (h *Handler) HandlerFunc() HandlerFunc {
-	return *h.handlerFunc
+func (h *Handler) HandlerFunc() *HandlerFunc {
+	return h.handlerFunc
 }
 
 func (h *Handler) Description() string {
