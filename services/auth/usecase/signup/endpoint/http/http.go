@@ -1,7 +1,10 @@
 package http
 
 import (
+	"fmt"
+	"html/template"
 	"net/http"
+	"path/filepath"
 
 	"github.com/egoholic/charcoal/corelib/http/router"
 	"github.com/egoholic/charcoal/corelib/http/router/params"
@@ -20,13 +23,18 @@ type SignapFormViewModel struct {
 }
 
 func renderSignupForm(w http.ResponseWriter, r *http.Request, p *params.Params) {
-	// filePath, err := filepath.Abs("./templates/signup.html")
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// t, err := template.ParseFiles(filePath)
-	// t.Execute(w, &SignapFormViewModel{"/signup/", http.MethodPost})
-	w.Write([]byte("hello"))
+	filePath, err := filepath.Abs("./services/auth/usecase/signup/endpoint/http/templates/signup.gohtml")
+	if err != nil {
+		panic(err)
+	}
+	t, err := template.ParseFiles(filePath)
+	if err != nil {
+		fmt.Printf("ERROR2: %s", err.Error())
+	}
+	err = t.Execute(w, &SignapFormViewModel{"/signup/", http.MethodPost})
+	if err != nil {
+		fmt.Printf("ERROR3: %s", err.Error())
+	}
 	w.WriteHeader(200)
 }
 
