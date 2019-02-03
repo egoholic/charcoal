@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/egoholic/charcoal/corelib/http/router"
+	"github.com/egoholic/charcoal/corelib/http/router/params"
 )
 
 func Extend(node *router.Node) error {
@@ -18,7 +19,7 @@ type SignapFormViewModel struct {
 	FormMethod string
 }
 
-func renderSignupForm(w http.ResponseWriter, r *http.Request) {
+func renderSignupForm(w http.ResponseWriter, r *http.Request, p *params.Params) {
 	// filePath, err := filepath.Abs("./templates/signup.html")
 	// if err != nil {
 	// 	panic(err)
@@ -29,6 +30,6 @@ func renderSignupForm(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
 }
 
-func performSignup(w http.ResponseWriter, r *http.Request) {
+func performSignup(w http.ResponseWriter, r *http.Request, p *params.Params) {
 	//form := form.New(r.Body.)
 }
