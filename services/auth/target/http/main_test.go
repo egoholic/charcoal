@@ -36,9 +36,11 @@ var _ = Describe("Auth HTTP servise", func() {
 				fmt.Printf("\n\n\n\tERROR: %s\n\n", err.Error())
 			}
 			Expect(response).NotTo(BeNil())
-			Expect(response.Status).To(Equal(""))
-			Expect(response.Header).To(Equal(nil))
-			Expect(response.Body).To(Equal(""))
+			Expect(response.Status).To(Equal("200 OK"))
+			Expect(response.Header.Get("Content-Length")).To(Equal("3"))
+			var body []byte
+			response.Body.Read(body)
+			Expect(string(body)).To(Equal("hey"))
 		})
 	})
 })
