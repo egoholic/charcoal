@@ -8,6 +8,8 @@ import (
 
 	"github.com/egoholic/charcoal/corelib/http/router"
 	"github.com/egoholic/charcoal/corelib/http/router/params"
+	"github.com/egoholic/charcoal/services/auth/usecase/signup"
+	"github.com/egoholic/charcoal/services/auth/usecase/signup/form"
 )
 
 func Extend(node *router.Node) error {
@@ -17,7 +19,7 @@ func Extend(node *router.Node) error {
 	return nil
 }
 
-type SignapFormViewModel struct {
+type SignupFormViewModel struct {
 	FormAction string
 	FormMethod string
 }
@@ -31,7 +33,7 @@ func renderSignupForm(w http.ResponseWriter, r *http.Request, p *params.Params) 
 	if err != nil {
 		fmt.Printf("ERROR2: %s", err.Error())
 	}
-	err = t.Execute(w, &SignapFormViewModel{"/signup/", http.MethodPost})
+	err = t.Execute(w, &SignupFormViewModel{"/signup/", http.MethodPost})
 	if err != nil {
 		fmt.Printf("ERROR3: %s", err.Error())
 	}
@@ -39,5 +41,11 @@ func renderSignupForm(w http.ResponseWriter, r *http.Request, p *params.Params) 
 }
 
 func performSignup(w http.ResponseWriter, r *http.Request, p *params.Params) {
-	//form := form.New(r.Body.)
+	fobj := form.New()
+	vres := fobj.Validate()
+	if vres.IsValid() {
+		signup.Signup() // signup and render success
+	} else {
+		vres // return error messages
+	}
 }
