@@ -41,6 +41,15 @@ var _ = Describe("Serror - Structured errors library", func() {
 				})
 			})
 
+			Context("when wrapped", func() {
+				It("returns error message", func() {
+					err := fmt.Errorf("testError")
+					reason := "reason"
+					serr := Wrap(err, reason)
+					Expect(serr.Error()).To(Equal("testError\n\tReason: reason\n\t\tOriginal: testError"))
+				})
+			})
+
 			Context("when created from the very beginning", func() {
 				It("returns error message", func() {
 					Expect(New("description", "reason").Error()).To(Equal("description\n\tReason: reason\n\t\tOriginal: -NONE-"))
