@@ -17,8 +17,12 @@ func New(d, r string) error {
 	return &SError{nil, d, r}
 }
 
-func Wrap(e error) error {
+func DumbWrap(e error) error {
 	return &SError{e, e.Error(), DEFAULT_REASON}
+}
+
+func Wrap(e error, r string) error {
+	return &SError{e, e.Error(), r}
 }
 
 func (e *SError) Error() string {

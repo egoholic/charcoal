@@ -16,10 +16,17 @@ var _ = Describe("Serror - Structured errors library", func() {
 			})
 		})
 
+		Describe("DumbWrap()", func() {
+			It("returns structured error", func() {
+				err := fmt.Errorf("testError")
+				Expect(DumbWrap(err)).To(BeAssignableToTypeOf(&SError{}))
+			})
+		})
+
 		Describe("Wrap()", func() {
 			It("returns structured error", func() {
 				err := fmt.Errorf("testError")
-				Expect(Wrap(err)).To(BeAssignableToTypeOf(&SError{}))
+				Expect(Wrap(err, "reason")).To(BeAssignableToTypeOf(&SError{}))
 			})
 		})
 	})
@@ -29,7 +36,7 @@ var _ = Describe("Serror - Structured errors library", func() {
 			Context("when wrapped", func() {
 				It("returns error message", func() {
 					err := fmt.Errorf("testError")
-					serr := Wrap(err)
+					serr := DumbWrap(err)
 					Expect(serr.Error()).To(Equal("testError\n\tReason: -NONE-\n\t\tOriginal: testError"))
 				})
 			})
