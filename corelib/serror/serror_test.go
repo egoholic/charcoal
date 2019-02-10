@@ -33,7 +33,7 @@ var _ = Describe("Serror - Structured errors library", func() {
 
 	Context("accessors", func() {
 		Describe(".Error()", func() {
-			Context("when wrapped", func() {
+			Context("when dumbed wrapped", func() {
 				It("returns error message", func() {
 					err := fmt.Errorf("testError")
 					serr := DumbWrap(err)
