@@ -16,21 +16,37 @@ var _ = Describe("Serror - Structured errors library", func() {
 			})
 		})
 
+		Describe("DumbWrap()", func() {
+			It("returns structured error", func() {
+				err := fmt.Errorf("testError")
+				Expect(DumbWrap(err)).To(BeAssignableToTypeOf(&SError{}))
+			})
+		})
+
 		Describe("Wrap()", func() {
 			It("returns structured error", func() {
 				err := fmt.Errorf("testError")
-				Expect(Wrap(err)).To(BeAssignableToTypeOf(&SError{}))
+				Expect(Wrap(err, "reason")).To(BeAssignableToTypeOf(&SError{}))
 			})
 		})
 	})
 
 	Context("accessors", func() {
 		Describe(".Error()", func() {
+			Context("when dumbed wrapped", func() {
+				It("returns error message", func() {
+					err := fmt.Errorf("testError")
+					serr := DumbWrap(err)
+					Expect(serr.Error()).To(Equal("testError\n\tReason: -NONE-\n\t\tOriginal: testError"))
+				})
+			})
+
 			Context("when wrapped", func() {
 				It("returns error message", func() {
 					err := fmt.Errorf("testError")
-					serr := Wrap(err)
-					Expect(serr.Error()).To(Equal("testError\n\tReason: -NONE-\n\t\tOriginal: testError"))
+					reason := "reason"
+					serr := Wrap(err, reason)
+					Expect(serr.Error()).To(Equal("testError\n\tReason: reason\n\t\tOriginal: testError"))
 				})
 			})
 
