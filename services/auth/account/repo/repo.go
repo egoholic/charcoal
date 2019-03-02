@@ -20,7 +20,7 @@ func (r *Repo) NewInserter(insert InsertAdapter) func(*account.Account) error {
 	return func(a *account.Account) error {
 		sid, err := insert(a)
 		if err != nil {
-			return serror.Wrap(err)
+			return serror.Decorate(err, "can not insert")
 		}
 
 		err = r.identityMap.Add(a.PK(), sid, a)

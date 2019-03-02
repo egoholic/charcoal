@@ -8,29 +8,34 @@ const (
 )
 
 type SError struct {
-	original    error
+	decorated   error
 	description string
 	reason      string
+	parent      error
 }
 
 func New(d, r string) error {
-	return &SError{nil, d, r}
+	return &SError{nil, d, r, nil}
 }
 
-func DumbWrap(e error) error {
-	return &SError{e, e.Error(), DEFAULT_REASON}
+func Wrap(err error, d, r string) error {
+	return &SError{nil, d, r, err}
 }
 
-func Wrap(e error, r string) error {
-	return &SError{e, e.Error(), r}
+func DumbDecorate(e error) error {
+	return &SError{e, e.Error(), DEFAULT_REASON, nil}
+}
+
+func Decorate(e error, r string) error {
+	return &SError{e, e.Error(), r, nil}
 }
 
 func (e *SError) Error() string {
-	var original string
-	if e.original != nil {
-		original = e.original.Error()
+	if e.decorated != nil {
+		return fmt.Sprintf("!Err: %s\n\tReason: %s\n\tDecorated: %s", e.description, e.reason, e.decorated.Error())
+	} else if e.parent != nil {
+		return fmt.Sprintf("!Err: %s\n\tReason: %s\n\tParent: %s", e.description, e.reason, e.parent.Error())
 	} else {
-		original = DEFAULT_ORIGINAL_MESSAGE
+		return fmt.Sprintf("!Err: %s\n\tReason: %s", e.description, e.reason)
 	}
-	return fmt.Sprintf("%s\n\tReason: %s\n\t\tOriginal: %s", e.description, e.reason, original)
 }
