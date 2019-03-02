@@ -5,11 +5,11 @@ import (
 	"net"
 	"time"
 
-	"github.com/egoholic/charcoal/corelib/serror"
 	"github.com/egoholic/charcoal/services/auth/account"
 	"github.com/egoholic/charcoal/services/auth/account/pwd"
 	"github.com/egoholic/charcoal/services/auth/session"
 	"github.com/egoholic/charcoal/services/auth/session/token"
+	"github.com/egoholic/serror"
 )
 
 type AccountByPKFinder func(string) (*account.Account, error)

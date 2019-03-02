@@ -3,8 +3,8 @@ package idmap
 import (
 	"fmt"
 
-	"github.com/egoholic/charcoal/corelib/serror"
 	"github.com/egoholic/charcoal/services/auth/account"
+	"github.com/egoholic/serror"
 )
 
 type IdentityMap struct {

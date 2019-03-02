@@ -1,9 +1,9 @@
 package repo
 
 import (
-	"github.com/egoholic/charcoal/corelib/serror"
 	"github.com/egoholic/charcoal/services/auth/account"
 	"github.com/egoholic/charcoal/services/auth/account/repo/idmap"
+	"github.com/egoholic/serror"
 )
 
 type Repo struct {
