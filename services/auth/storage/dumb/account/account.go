@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/egoholic/charcoal/services/auth/account"
-	"github.com/mongodb/mongo-go-driver/mongo"
 )
 
 type Adapter struct {
@@ -23,7 +22,7 @@ func (a *Adapter) NewInserter() func(*account.Account) (interface{}, error) {
 	}
 }
 
-func (a *Adapter) NewByPKFinder(ctx context.Context, client *mongo.Client) func(string) (interface{}, *account.Account, error) {
+func (a *Adapter) NewByPKFinder(ctx context.Context) func(string) (interface{}, *account.Account, error) {
 	return func(pk string) (interface{}, *account.Account, error) {
 		for i, acc := range a.store {
 			if acc.PK() == pk {

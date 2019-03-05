@@ -3,9 +3,6 @@ package repo_test
 import (
 	"context"
 
-	"github.com/mongodb/mongo-go-driver/mongo"
-
-	"github.com/egoholic/charcoal/services/auth/config"
 	adapter "github.com/egoholic/charcoal/services/auth/storage/dumb/account"
 
 	"github.com/egoholic/charcoal/services/auth/account"
@@ -34,8 +31,6 @@ var _ = Describe("Accounts Repository", func() {
 		It("returns inserter", func() {
 			a := account.New(name1, pwd.New(pwd1))
 			repo := New()
-			client, _ := mongo.NewClient(config.MongoDBConnectionString())
-			client.Connect(context.TODO())
 			insert := repo.NewInserter(storage.NewInserter())
 			Expect(insert(a)).To(BeNil())
 		})
@@ -45,12 +40,9 @@ var _ = Describe("Accounts Repository", func() {
 		It("returns finder", func() {
 			a := account.New(name1, pwd.New(pwd1))
 			repo := New()
-			client, _ := mongo.NewClient(config.MongoDBConnectionString())
-			client.Connect(context.TODO())
-			client.Connect(context.TODO())
 			insert := repo.NewInserter(storage.NewInserter())
 			insert(a)
-			find := repo.NewByPKFinder(storage.NewByPKFinder(context.TODO(), client))
+			find := repo.NewByPKFinder(storage.NewByPKFinder(context.TODO()))
 			found, _ := find(name1)
 			Expect(found.PK()).To(Equal(name1))
 		})
