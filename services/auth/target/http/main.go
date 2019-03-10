@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/egoholic/charcoal/corelib/http/router"
 	signin "github.com/egoholic/charcoal/services/auth/usecase/signin/endpoint/http"
 	signup "github.com/egoholic/charcoal/services/auth/usecase/signup/endpoint/http"
+	"github.com/egoholic/router"
 )
 
 func main() {

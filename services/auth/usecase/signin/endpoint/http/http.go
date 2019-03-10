@@ -3,8 +3,8 @@ package http
 import (
 	"net/http"
 
-	"github.com/egoholic/charcoal/corelib/http/router"
-	"github.com/egoholic/charcoal/corelib/http/router/params"
+	"github.com/egoholic/router"
+	"github.com/egoholic/router/params"
 )
 
 func Extend(node *router.Node) error {

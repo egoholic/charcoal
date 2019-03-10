@@ -3,6 +3,17 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:ceb390b53119a93c3987ba4aeb3836f6f61158617cb9d4c38513f06e991f8ccd"
+  name = "github.com/egoholic/router"
+  packages = [
+    ".",
+    "params",
+  ]
+  pruneopts = "UT"
+  revision = "f8f0f7f8f2198f038c603d466bdd35ad879f49b5"
+
+[[projects]]
+  branch = "master"
   digest = "1:a07f8e1f7270c15e46a5ce408ae06ebec5cfd9e4398b1d9e3a99a20c53a2272c"
   name = "github.com/egoholic/serror"
   packages = ["."]
@@ -236,6 +247,8 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/egoholic/router",
+    "github.com/egoholic/router/params",
     "github.com/egoholic/serror",
     "github.com/mongodb/mongo-go-driver/bson",
     "github.com/mongodb/mongo-go-driver/mongo",

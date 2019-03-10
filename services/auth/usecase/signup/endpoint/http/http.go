@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/egoholic/charcoal/corelib/http/router"
-	"github.com/egoholic/charcoal/corelib/http/router/params"
 	"github.com/egoholic/charcoal/services/auth/usecase/signup"
 	"github.com/egoholic/charcoal/services/auth/usecase/signup/form"
+	"github.com/egoholic/router"
+	"github.com/egoholic/router/params"
 )
 
 func Extend(node *router.Node) error {

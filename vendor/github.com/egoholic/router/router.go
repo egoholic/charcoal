@@ -3,7 +3,7 @@ package router
 import (
 	"net/http"
 
-	"github.com/egoholic/charcoal/corelib/http/router/params"
+	"github.com/egoholic/router/params"
 )
 
 const (
