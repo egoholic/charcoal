@@ -14,12 +14,10 @@ type Form struct {
 	uniquenessChecker    UniquenessChecker
 }
 
-type UniquenessChecker interface {
-	IsUnique(string) bool
-}
+type UniquenessChecker func(string) (bool, error)
 
-func New(login, password, passwordConfirmation string, checker UniquenessChecker) *Form {
-	return &Form{login, password, passwordConfirmation, nil, checker}
+func New(login, password, passwordConfirmation string, check UniquenessChecker) *Form {
+	return &Form{login, password, passwordConfirmation, nil, check}
 }
 
 func (f *Form) Login() string {
@@ -56,7 +54,12 @@ func (f *Form) validateLogin() {
 		n.AddMessage("login must be at most 32 characters long")
 	}
 
-	if !f.uniquenessChecker.IsUnique(f.login) {
+	unique, err := f.uniquenessChecker(f.login)
+	if err != nil {
+		// TODO: add logging
+		n.AddMessage("Sorry. Can not check uniqueness. Please try again later.")
+	}
+	if !unique {
 		n.AddMessage("login must be unique")
 	}
 

@@ -1,6 +1,9 @@
 package config
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 func ServiceName() string {
 	return "auth"
@@ -24,4 +27,8 @@ func MongoDBDatabaseName() string {
 
 func HTTPServicePort() string {
 	return ":8080"
+}
+
+func HTTPTimeOut() time.Duration {
+	return 5 * time.Second
 }

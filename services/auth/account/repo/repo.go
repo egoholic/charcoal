@@ -47,15 +47,20 @@ func (r *Repo) NewByPKFinder(find FindByPKAdapter) func(string) (*account.Accoun
 	}
 }
 
-type CheckUniquenessAdapter func(string) (bool, error)
-
-func (r *Repo) NewUniquenessChecker(check CheckUniquenessAdapter) func(string) (bool, error) {
-	return func(login string) (bool, error) {
+func (r *Repo) NewUniquenessChecker(find FindByPKAdapter) func(string) (bool, error) {
+	return func(login string) (result bool, err error) {
+		result = false
 		_, _, ok := r.identityMap.Get(login)
-		if ok {
-			return true, nil
+		result = !ok
+		if result {
+			return
 		}
 
-		return check(login)
+		_, account, err := find(login)
+		if err != nil {
+			return
+		}
+		result = account == nil
+		return
 	}
 }

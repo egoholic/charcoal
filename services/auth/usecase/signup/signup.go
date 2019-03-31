@@ -12,31 +12,30 @@ import (
 	"github.com/egoholic/serror"
 )
 
-type AccountByPKFinder func(string) (*account.Account, error)
-type AccountInserter func(*account.Account) error
-type SessionInserter func(*session.Session) error
+type AccountByPKFinder func(string) (interface{}, *account.Account, error)
+type AccountInserter func(*account.Account) (interface{}, error)
+type SessionInserter func(*session.Session) (interface{}, error)
 
 func Signup(name, password string, ip net.IP, findAccount AccountByPKFinder, insertAccount AccountInserter, insertSession SessionInserter) (*account.Account, *session.Session, error) {
-	_a, _ := findAccount(name)
+	_, _a, _ := findAccount(name)
 	if _a != nil {
 		return nil, nil, serror.New("Can't signap.", fmt.Sprintf("Account `%s` already exists.", name))
 	}
 
 	a := account.New(name, pwd.New(password))
-	err := insertAccount(a)
+	_, err := insertAccount(a)
 	if err != nil {
 		return nil, nil, err
 	}
-	a, err = findAccount(name)
+	_, a, err = findAccount(name)
 	if err != nil {
 		return nil, nil, err
 	}
 	p := session.NewPayload(a, token.New(), ip, time.Now())
 	s := session.New(p)
-	err = insertSession(s)
+	_, err = insertSession(s)
 	if err != nil {
 		return nil, nil, err
 	}
 	return a, s, nil
-
 }

@@ -3,8 +3,8 @@ package main
 import (
 	"net/http"
 
-	"github.com/egoholic/charcoal/corelib/http/router"
 	"github.com/egoholic/charcoal/corelib/http/router/net/http/adapter"
+	"github.com/egoholic/router"
 )
 
 var h http.Handler
