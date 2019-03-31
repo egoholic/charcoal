@@ -47,8 +47,8 @@ var _ = Describe("Sessions Repository", func() {
 	Describe(".NewInserter()", func() {
 		It("returns correct inserter", func() {
 			insert := repo.NewInserter(adapter.NewInserter(context.TODO(), client))
-
-			Expect(insert(session1)).To(BeNil())
+			_, err := insert(session1)
+			Expect(err).To(BeNil())
 		})
 	})
 

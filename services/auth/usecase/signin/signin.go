@@ -9,19 +9,19 @@ import (
 	"github.com/egoholic/charcoal/services/auth/session/token"
 )
 
-type ByPKFinder func(string) (*account.Account, error)
-type SessionInserter func(*session.Session) error
+type ByPKFinder func(string) (interface{}, *account.Account, error)
+type SessionInserter func(*session.Session) (interface{}, error)
 
 func Signin(aName, password string, ip net.IP, findAccountByPK ByPKFinder, insertSession SessionInserter) (*session.Session, error) {
-	a, err := findAccountByPK(aName)
+	_, acc, err := findAccountByPK(aName)
 	if err != nil {
 		return nil, err
 	}
 
-	if a.IsAuthenticableWith(password) {
-		p := session.NewPayload(a, token.New(), ip, time.Now())
+	if acc.IsAuthenticableWith(password) {
+		p := session.NewPayload(acc, token.New(), ip, time.Now())
 		s := session.New(p)
-		err := insertSession(s)
+		_, err := insertSession(s)
 		if err != nil {
 			return nil, err
 		} else {
@@ -36,7 +36,7 @@ func Signin(aName, password string, ip net.IP, findAccountByPK ByPKFinder, inser
 func SigninWithoutCheck(a *account.Account, ip net.IP, insertSession SessionInserter) (*session.Session, error) {
 	p := session.NewPayload(a, token.New(), ip, time.Now())
 	s := session.New(p)
-	err := insertSession(s)
+	_, err := insertSession(s)
 	if err != nil {
 		return nil, err
 	} else {

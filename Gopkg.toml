@@ -26,16 +26,24 @@
 
 
 [[constraint]]
+  branch = "master"
+  name = "github.com/egoholic/router"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/egoholic/serror"
+
+[[constraint]]
   name = "github.com/mongodb/mongo-go-driver"
-  version = "0.2.0"
+  version = "0.3.0"
 
 [[constraint]]
   name = "github.com/onsi/ginkgo"
-  version = "1.7.0"
+  version = "1.8.0"
 
 [[constraint]]
   name = "github.com/onsi/gomega"
-  version = "1.4.3"
+  version = "1.5.0"
 
 [prune]
   go-tests = true

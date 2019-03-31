@@ -63,10 +63,10 @@ func (me MarshalError) Error() string {
 //
 // Example usage:
 //
-// 		mongo.Pipeline{{
-// 			{"$group", bson.D{{"_id", "$state"}, {"totalPop", bson.D{"$sum", "$pop"}}}},
-// 			{"$match": bson.D{{"totalPop", bson.D{"$gte", 10*1000*1000}}}},
-// 		}}
+//		mongo.Pipeline{
+//			{{"$group", bson.D{{"_id", "$state"}, {"totalPop", bson.D{{"$sum", "$pop"}}}}}},
+//			{{"$match", bson.D{{"totalPop", bson.D{{"$gte", 10*1000*1000}}}}}},
+//		}
 //
 type Pipeline []bson.D
 
@@ -170,7 +170,10 @@ func ensureID(d bsonx.Doc) (bsonx.Doc, interface{}) {
 }
 
 func ensureDollarKey(doc bsonx.Doc) error {
-	if len(doc) > 0 && !strings.HasPrefix(doc[0].Key, "$") {
+	if len(doc) == 0 {
+		return errors.New("update document must have at least one element")
+	}
+	if !strings.HasPrefix(doc[0].Key, "$") {
 		return errors.New("update document must contain key beginning with '$'")
 	}
 	return nil

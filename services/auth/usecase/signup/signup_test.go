@@ -45,7 +45,8 @@ var _ = Describe("Signup Usecase", func() {
 				insertAccount := aR.NewInserter(accountsAdapter.NewInserter(context.TODO(), client))
 				insertSession := sR.NewInserter(sessionsAdapter.NewInserter(context.TODO(), client))
 
-				a, s, _ := Signup(name1, password1, ip1, findAccount, insertAccount, insertSession)
+				a, s, err := Signup(name1, password1, ip1, findAccount, insertAccount, insertSession)
+				Expect(err).To(BeNil())
 				Expect(a).To(BeAssignableToTypeOf(&account.Account{}))
 				Expect(s).To(BeAssignableToTypeOf(&session.Session{}))
 				Expect(a.PK()).To(Equal(name1))
@@ -69,7 +70,7 @@ var _ = Describe("Signup Usecase", func() {
 				a, s, rerr := Signup(name1, password1, ip1, findAccount, insertAccount, insertSession)
 				Expect(a).To(BeNil())
 				Expect(s).To(BeNil())
-				Expect(rerr.Error()).To(Equal("Can't signap.\n\tReason: Account `Donald Trump` already exists.\n\t\tOriginal: -NONE-"))
+				Expect(rerr.Error()).To(Equal("!Err: Can't sign up.\n\tReason: Account `Donald Trump` already exists."))
 			})
 		})
 	})

@@ -3,6 +3,7 @@ package repo
 import (
 	"github.com/egoholic/charcoal/services/auth/session"
 	"github.com/egoholic/charcoal/services/auth/session/repo/idmap"
+	"github.com/egoholic/serror"
 )
 
 type Repo struct {
@@ -15,15 +16,16 @@ func New() *Repo {
 
 type InsertAdapter func(s *session.Session) (interface{}, error)
 
-func (r *Repo) NewInserter(insert InsertAdapter) func(*session.Session) error {
-	return func(s *session.Session) error {
-		sid, err := insert(s)
+func (r *Repo) NewInserter(insert InsertAdapter) func(*session.Session) (interface{}, error) {
+	return func(s *session.Session) (sid interface{}, err error) {
+		sid, err = insert(s)
 		if err != nil {
-			return err
+			err = serror.Decorate(err, "can not insert session")
+			return
 		}
 
 		err = r.identityMap.Add(s.PK(), sid, s)
-		return err
+		return
 	}
 }
 

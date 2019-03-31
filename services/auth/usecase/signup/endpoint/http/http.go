@@ -71,6 +71,6 @@ func performSignup(w http.ResponseWriter, r *http.Request, p *params.Params) {
 	if vres.IsValid() {
 		signup.Signup(login, password, ip, findAccount, insertAccount, insertSession) // signup and render success
 	} else {
-		vres // return error messages
+		// return error messages
 	}
 }

@@ -18,29 +18,33 @@ type SessionInserter func(*session.Session) (interface{}, error)
 
 func Signup(name, password string, ip net.IP, findAccount AccountByPKFinder, insertAccount AccountInserter, insertSession SessionInserter) (acc *account.Account, ses *session.Session, err error) {
 	_, acc, err = findAccount(name)
-	if err != nil {
-		return
-	}
+
 	if acc != nil {
-		return nil, nil, serror.New("Can't signap.", fmt.Sprintf("Account `%s` already exists.", name))
+		acc = nil
+		err = serror.New("Can't sign up.", fmt.Sprintf("Account `%s` already exists.", name))
+		return
 	}
 
 	acc = account.New(name, pwd.New(password))
 	_, err = insertAccount(acc)
 	if err != nil {
-		err = serror.Decorate(err, "can't insert account")
+		acc = nil
+		err = serror.Decorate(err, fmt.Sprintf("Can't insert account: `%s`", name))
 		return
 	}
 	_, acc, err = findAccount(name)
 	if err != nil {
-		err = serror.Decorate(err, "can't find just inserted account")
+		acc = nil
+		err = serror.Decorate(err, fmt.Sprintf("Can't find just inserted account: `%s`", name))
 		return
 	}
 	p := session.NewPayload(acc, token.New(), ip, time.Now())
-	s := session.New(p)
-	_, err = insertSession(s)
+	ses = session.New(p)
+	_, err = insertSession(ses)
 	if err != nil {
-		err = serror.Decorate(err, "can't insert session")
+		acc = nil
+		ses = nil
+		err = serror.Decorate(err, fmt.Sprintf("Can't insert session for account: `%s`", name))
 		return
 	}
 
