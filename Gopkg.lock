@@ -21,6 +21,14 @@
   revision = "5d21b5009d685e809888521da4cc96730ff148cf"
 
 [[projects]]
+  branch = "master"
+  digest = "1:fb284c6ff579774c7b7089f48eb6616f2edb52d19d9036646c14093591aa9ba9"
+  name = "github.com/egoholic/validation"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "60721bb5bb6a4e89f93276e62be0ed734c80ecad"
+
+[[projects]]
   digest = "1:586ea76dbd0374d6fb649a91d70d652b7fe0ccffb8910a77468e7702e7901f3d"
   name = "github.com/go-stack/stack"
   packages = ["."]
@@ -259,6 +267,7 @@
     "github.com/egoholic/router",
     "github.com/egoholic/router/params",
     "github.com/egoholic/serror",
+    "github.com/egoholic/validation",
     "github.com/mongodb/mongo-go-driver/bson",
     "github.com/mongodb/mongo-go-driver/mongo",
     "github.com/onsi/ginkgo",

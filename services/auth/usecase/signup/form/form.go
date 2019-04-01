@@ -1,7 +1,7 @@
 package form
 
 import (
-	"github.com/egoholic/charcoal/corelib/validation"
+	"github.com/egoholic/validation"
 )
 
 const ROOT_TITLE = "signup"

@@ -3,7 +3,6 @@ package main
 import (
 	"net/http"
 
-	"github.com/egoholic/charcoal/corelib/http/router/net/http/adapter"
 	"github.com/egoholic/router"
 )
 
@@ -21,6 +20,5 @@ func main() {
 	signin.GET(nil, "Renders Signin form.")
 	signin.POST(nil, "Signs user in.")
 
-	handler := adapter.NewHandler(r)
-	http.ListenAndServe("/", handler)
+	http.ListenAndServe("/", r)
 }
