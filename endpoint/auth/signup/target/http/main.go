@@ -33,12 +33,10 @@ func main() {
 	signup := root.Sub("signup")
 	signup.GET(renderSignupForm, "Renders sign up form")
 	signup.POST(performSignup, "Performs sign up.")
-
 	err := http.ListenAndServe(config.HTTPServicePort(), rtr)
 	if err != nil {
 		logger.Panicf("Panic: %s\n", err.Error())
 	}
-	logger.Printf("Service `%s` runned well!\n", config.ServiceInstanceName())
 }
 
 type SignupFormViewModel struct {
