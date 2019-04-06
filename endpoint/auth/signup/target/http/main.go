@@ -12,6 +12,7 @@ import (
 
 	"github.com/egoholic/charcoal/endpoint/auth/signup"
 	"github.com/egoholic/charcoal/endpoint/auth/signup/config"
+	"github.com/egoholic/ruid"
 
 	"github.com/egoholic/charcoal/endpoint/auth/signup/form"
 	accountRepo "github.com/egoholic/charcoal/entity/auth/account/repo"
@@ -33,7 +34,7 @@ func main() {
 	signup := root.Sub("signup")
 	signup.GET(renderSignupForm, "Renders sign up form")
 	signup.POST(performSignup, "Performs sign up.")
-	err := http.ListenAndServe(config.HTTPServicePort(), rtr)
+	err := http.ListenAndServe(config.HTTPServicePort(), ruid.WrapHandlerWithRUID([]string{"signup"}, rtr))
 	if err != nil {
 		logger.Panicf("Panic: %s\n", err.Error())
 	}

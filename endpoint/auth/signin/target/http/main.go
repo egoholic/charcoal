@@ -9,6 +9,7 @@ import (
 	"github.com/egoholic/charcoal/endpoint/auth/signin/config"
 	"github.com/egoholic/router"
 	"github.com/egoholic/router/params"
+	"github.com/egoholic/ruid"
 )
 
 func main() {
@@ -19,7 +20,7 @@ func main() {
 	signin := root.Sub("signin")
 	signin.GET(renderSigninForm, "Renders sign in form.")
 	signin.POST(performSignin, "Performs sign in.")
-	err := http.ListenAndServe(config.HTTPServicePort(), rtr)
+	err := http.ListenAndServe(config.HTTPServicePort(), ruid.WrapHandlerWithRUID([]string{"signin"}, rtr))
 	if err != nil {
 		logger.Panicf("Panic: %s\n", err.Error())
 	}
