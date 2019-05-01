@@ -7,25 +7,25 @@ import (
 )
 
 var (
-	pwd1 = "12345678"
-	pwd2 = "24681012"
+	salt = []byte("So much salt to create password")
+	pass = []byte("PasswordTest!@#)(*")
 )
 
 var _ = Describe("Passwords domain", func() {
 	Context("creation", func() {
-		Describe("New()", func() {
+		Describe("EncryptPassword()", func() {
 			It("returns encrypted password", func() {
-				ep := EncryptedPassword("")
-				Expect(New(pwd1)).To(BeAssignableToTypeOf(&ep))
+				ep := EncryptPassword(pass, salt)
+				Expect(EncryptPassword(pass, salt)).To(BeAssignableToTypeOf(ep))
 			})
 		})
 	})
 
-	Context("type conversion", func() {
-		Describe(".ToString()", func() {
-			It("returns string", func() {
-				ep := EncryptedPassword("12345678")
-				Expect(ep.ToString()).To(BeAssignableToTypeOf(pwd1))
+	Context("mathcing", func() {
+		Describe("MatchPassword()", func() {
+			It("returns logical result when match passwords", func() {
+				matched := MatchPassword(pass, salt)
+				Expect(MatchPassword(pass, salt)).To(BeAssignableToTypeOf(matched))
 			})
 		})
 	})
