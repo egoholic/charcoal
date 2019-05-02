@@ -2,6 +2,7 @@ package pwd
 
 import (
 	"bytes"
+	"encoding/base64"
 	"log"
 
 	"golang.org/x/crypto/scrypt"
@@ -19,14 +20,13 @@ func EncryptPassword(pass, salt []byte) *EncryptedPassword {
 	if err != nil {
 		log.Fatal(err)
 	}
-	ep := EncryptedPassword(hash)
+	ep := EncryptedPassword([]byte(base64.StdEncoding.EncodeToString(hash)))
 	return &ep
 }
 
 // MatchPassword matches is passwords valid
-func MatchPassword(pass, salt []byte) *Match {
+func MatchPassword(pass, salt, hashedPassword []byte) *Match {
 	ep := EncryptPassword(pass, salt)
-
-	res := Match(bytes.Equal(pass, []byte(*ep)))
+	res := Match(bytes.Equal([]byte(hashedPassword), []byte(*ep)))
 	return &res
 }
