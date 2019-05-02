@@ -27,6 +27,6 @@ func EncryptPassword(pass, salt []byte) *EncryptedPassword {
 // MatchPassword matches is passwords valid
 func MatchPassword(pass, salt, hashedPassword []byte) *Match {
 	ep := EncryptPassword(pass, salt)
-	res := Match(bytes.Equal([]byte(hashedPassword), []byte(*ep)))
+	res := Match(bytes.Equal(hashedPassword, []byte(*ep)))
 	return &res
 }
